@@ -1,21 +1,17 @@
 # ERC-7656
 
-This is a reference implementation for the ERC-7656 standard.
+This is a reference implementation for the ERC-7656 standard taken from the [Cruna Protocol](https://github.com/crunaprotocol/cruna-protocol) implementation, which also has full coverage of the smart contracts.
+
+A canonical version has been deployed at the address 
+
+0x7656f0fB4Ca6973cf99D910B36705a2dEDA97eA1 
+
+using Nick's Factory with the following salt:
+
+0x765600000000000000000000000000000000000000000000000000000000cf7e
 
 ## License
 
-Copyright (C) 2023 Cruna
+MIT
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You may have received a copy of the GNU General Public License
-along with this program. If not,
-see <https://www.gnu.org/licenses/gpl-3.0.en.html>.
+Copyright (C) 2023+ Cruna
