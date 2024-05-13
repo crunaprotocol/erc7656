@@ -10,7 +10,7 @@ using Nick's Factory with the following salt:
 
 0x765600000000000000000000000000000000000000000000000000000000cf7e
 
-on mainnets on Etherum, Polygon, BNB Chain and on testnets on Avalanche Fuji and Celo Alfajores. The code on mainnets has been verified.   
+on mainnets on Etherum, Polygon, BNB Chain, Base and on testnets on Avalanche Fuji, Celo Alfajores and Base Sepolia. The code on most mainnets has been verified.   
 
 ## License
 
