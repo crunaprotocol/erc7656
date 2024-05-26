@@ -9,11 +9,9 @@ let deployUtils;
 async function main() {
   deployUtils = new EthDeployUtils(path.resolve(__dirname, ".."), console.log);
 
-  const [deployer] = await ethers.getSigners();
-
   const bytecodesPath = path.resolve(
-    __dirname,
-    "canonicalBytecodes.json",
+      __dirname,
+      "../contracts/bytecode.json",
   );
 
   let bytecodes;

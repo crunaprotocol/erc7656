@@ -17,7 +17,7 @@ async function main() {
 
   const bytecodesPath = path.resolve(
       __dirname,
-      "canonicalBytecodes.json",
+      "../contracts/bytecode.json",
   );
 
   const bytecodes = JSON.parse(fs.readFileSync(bytecodesPath, "utf8"));

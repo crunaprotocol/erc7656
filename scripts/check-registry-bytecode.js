@@ -15,12 +15,10 @@ async function main() {
 
   const bytecodesPath = path.resolve(
       __dirname,
-      "canonicalBytecodes.json",
+      "../contracts/bytecode.json",
   );
 
-
   const bytecodes = JSON.parse(fs.readFileSync(bytecodesPath, "utf8"));
-  // console.log(Object.keys(bytecodes));
 
   console.log(
     "The code for registry has changed:",
