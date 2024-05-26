@@ -1,0 +1,31 @@
+{
+  "name": "erc7656",
+  "version": "0.1.0",
+  "description": "ERC7656 Reference Implementation",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "**/*.sol",
+    "README.md"
+  ],
+  "scripts": {
+    "prepublishOnly": "../scripts/verify-package-json-in-sync.js && ../scripts/check-hardhat-console.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crunaprotocol/erc7656.git"
+  },
+  "author": {
+    "name": "Francesco Sullo",
+    "email": "francesco@sullo.co"
+  },
+  "bugs": {
+    "url": "https://github.com/crunaprotocol/erc7656/issues"
+  },
+  "homepage": "https://github.com/crunaprotocol/erc7656#readme",
+  "license": "GPL3",
+  "dependencies": {
+    "erc6551": "^0.3.1"
+  }
+}

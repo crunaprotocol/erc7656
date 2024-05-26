@@ -12,8 +12,13 @@ using Nick's Factory with the following salt:
 
 on mainnets on Etherum, Polygon, BNB Chain, Base and on testnets on Avalanche Fuji, Celo Alfajores and Base Sepolia. The code on most mainnets has been verified.   
 
+## Usage
+
+Install it as a dependency
+
 ## License
 
 MIT
 
 Copyright (C) 2023+ Cruna
+[README.md](README.md)

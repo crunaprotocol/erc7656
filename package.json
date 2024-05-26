@@ -14,6 +14,8 @@
     "compile": "NODE_ENV=test npx hardhat compile",
     "lint": "prettier --write 'contracts/**/*.sol' && solhint 'contracts/**/*.sol'",
     "prepare": "husky install",
+    "prepublishOnly": "echo 'Error: Please use 'npm run publish-package' to publish.' && exit 1",
+    "publish-package": "bin/publish.sh",
     "postinstall": "./post-install.sh"
   },
   "repository": {
