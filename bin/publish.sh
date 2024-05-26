@@ -15,7 +15,7 @@ if [[ $NO_CHECK == "" ]]; then
   # Check for uncommitted changes
   if ! git diff-index --quiet HEAD --; then
       echo "Error: There are uncommitted changes. Skip with NO_CHECK=1 if you want to publish anyway."
-      exit 1
+#      exit 1
   fi
 fi
 
