@@ -16,20 +16,16 @@ abstract contract ERC7656Deployer {
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
-   * @param erc7656Registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
+   * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
    */
   function _isDeployed(
     address implementation,
     bytes32 salt,
     address tokenAddress,
     uint256 tokenId,
-    address erc7656Registry
+    address registry
   ) internal view virtual returns (bool) {
-    if (erc7656Registry == address(0)) {
-      // canonical registry deployed by Cruna Protocol
-      erc7656Registry = 0x7656CCCC1d93430f4E43A7ea0981C01469c9D6A2;
-    }
-    address _addr = _addressOfDeployed(implementation, salt, tokenAddress, tokenId, erc7656Registry);
+    address _addr = _addressOf(implementation, salt, tokenAddress, tokenId, _canonicalERC7656Registry(registry));
     uint32 size;
     // solhint-disable-next-line no-inline-assembly
     assembly {
@@ -43,20 +39,24 @@ abstract contract ERC7656Deployer {
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
-   * @param erc7656Registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
+   * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
    */
   function _addressOf(
     address implementation,
     bytes32 salt,
     address tokenAddress,
     uint256 tokenId,
-    address erc7656Registry
+    address registry
   ) internal view virtual returns (address) {
-    if (erc7656Registry == address(0)) {
-      // canonical registry deployed by Cruna Protocol
-      erc7656Registry = 0x7656CCCC1d93430f4E43A7ea0981C01469c9D6A2;
-    }
-    return ERC6551AccountLib.computeAddress(erc7656Registry, implementation, salt, block.chainid, tokenAddress, tokenId);
+    return
+      ERC6551AccountLib.computeAddress(
+        _canonicalERC7656Registry(registry),
+        implementation,
+        salt,
+        block.chainid,
+        tokenAddress,
+        tokenId
+      );
   }
 
   /**
@@ -64,19 +64,23 @@ abstract contract ERC7656Deployer {
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
-   * @param erc7656Registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
+   * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
    */
   function _deploy(
     address implementation,
     bytes32 salt,
     address tokenAddress,
     uint256 tokenId,
-    address erc7656Registry
+    address registry
   ) internal virtual returns (address) {
-    if (erc7656Registry == address(0)) {
-      // canonical registry deployed by Cruna Protocol
-      erc7656Registry = 0x7656CCCC1d93430f4E43A7ea0981C01469c9D6A2;
+    return
+      IERC7656Registry(_canonicalERC7656Registry(registry)).create(implementation, salt, block.chainid, tokenAddress, tokenId);
+  }
+
+  function _canonicalERC7656Registry(address registry) internal pure returns (address) {
+    if (registry != address(0)) {
+      return registry;
     }
-    return IERC7656Registry(erc7656Registry).create(implementation, salt, block.chainid, tokenAddress, tokenId);
+    return 0x7656CCCC1d93430f4E43A7ea0981C01469c9D6A2;
   }
 }
