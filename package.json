@@ -1,6 +1,6 @@
 {
   "name": "erc7656",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "ERC7656 Reference Implementation",
   "publishConfig": {
     "access": "public"

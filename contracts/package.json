@@ -1,13 +1,14 @@
 {
   "name": "erc7656",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "ERC7656 Reference Implementation",
   "publishConfig": {
     "access": "public"
   },
   "files": [
     "**/*.sol",
-    "README.md"
+    "README.md",
+    "bytecode.json"
   ],
   "scripts": {
     "prepublishOnly": "../scripts/verify-package-json-in-sync.js && ../scripts/check-hardhat-console.js"
