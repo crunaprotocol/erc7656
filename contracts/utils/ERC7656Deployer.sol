@@ -39,13 +39,13 @@ abstract contract ERC7656Deployer {
   }
 
   /**
-   * @notice Internal function to return the address of a deployed token bound contract
+   * @notice Internal function to return the address of a token linked contract
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
    * @param erc7656Registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
    */
-  function _addressOfDeployed(
+  function _addressOf(
     address implementation,
     bytes32 salt,
     address tokenAddress,
