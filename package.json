@@ -1,7 +1,7 @@
 {
-  "name": "@cruna/protocol",
-  "version": "0.6.1",
-  "description": "The Cruna protocol",
+  "name": "erc7656",
+  "version": "0.1.0",
+  "description": "ERC7656 Reference Implementation",
   "publishConfig": {
     "access": "public"
   },
@@ -68,6 +68,7 @@
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@nomicfoundation/hardhat-verify": "^2.0.6"
+    "@nomicfoundation/hardhat-verify": "^2.0.6",
+    "erc6551": "^0.3.1"
   }
 }
