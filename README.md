@@ -38,6 +38,9 @@ The code has been verified on most mainnets.
 
 Look at `contracts/bytecode.json` for the details.
 
+To see if it has been deployed by others on other chains, look at
+https://blockscan.com/address/0x7656f0fB4Ca6973cf99D910B36705a2dEDA97eA1
+
 ## Usage
 
 Install it as a dependency
