@@ -2,9 +2,9 @@
 pragma solidity ^0.8.20;
 
 /**
- * @title IERC7656Contract.sol
+ * @title IERC7656Linked.sol.sol
  */
-interface IERC7656Contract {
+interface IERC7656Linked {
   /**
    * @notice Returns the token linked to the contract
    * @return chainId The chainId of the token
