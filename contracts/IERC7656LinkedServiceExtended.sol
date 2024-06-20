@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IERC7656Linked} from "./IERC7656Linked.sol";
+import {IERC7656Service} from "./IERC7656Service.sol";
 
 // this is a reduction of IERC6551Account focusing purely on the bond between the NFT and the contract
 
 /**
- * @title IERC7656LinkedExtended.sol
+ * @title IERC7656LinkedServiceExtended.sol.sol
  */
-interface IERC7656LinkedExtended is IERC7656Linked {
+interface IERC7656LinkedServiceExtended is IERC7656Service {
   /**
    * @notice Returns the owner of the token
    */
