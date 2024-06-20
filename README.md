@@ -1,6 +1,6 @@
 # ERC-7656
 
-This is a reference implementation for the ERC-7656 standard taken from the [Cruna Protocol](https://github.com/crunaprotocol/cruna-protocol) implementation, which also has full coverage of the smart contracts.
+This is a reference implementation for the [ERC-7656](https://eips.ethereum.org/EIPS/eip-7656) standard taken from the [Cruna Protocol](https://github.com/crunaprotocol/cruna-protocol) implementation, which also has full coverage of the smart contracts.
 
 The following bytecode:
 
@@ -88,7 +88,7 @@ contract MyExpandableToken is ERC721, Ownable, ERC7656Deployer {
 
 For more elaborate example, take a look at the [Cruna Protocol](https://github.com/crunaprotocol/cruna-protocol).
 
-Notice that the plugin can be deployed by anyone, not only by the owner. Deploying it from the token itself, however, allows for more controls; for example, if executing an initializing function allowed only by the token owner.
+Notice that the plugin can be deployed by anyone, not only by the NFT. Deploying it from the token itself, however, allows for more controls; for example, if an initialize function must be executed immediately after the deployment.
 
 ## License
 

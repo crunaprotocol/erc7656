@@ -2,18 +2,14 @@
 pragma solidity ^0.8.20;
 
 import {IERC7656Service} from "./IERC7656Service.sol";
+import {EIP5313} from "./utils/EIP5313.sol";
 
 // this is a reduction of IERC6551Account focusing purely on the bond between the NFT and the contract
 
 /**
- * @title IERC7656LinkedServiceExtended.sol.sol
+ * @title IERC7656ExtendedService.sol.sol
  */
-interface IERC7656LinkedServiceExtended is IERC7656Service {
-  /**
-   * @notice Returns the owner of the token
-   */
-  function owner() external view returns (address);
-
+interface IERC7656ExtendedService is IERC7656Service, EIP5313 {
   /**
    * @notice Returns the address of the token contract
    */
