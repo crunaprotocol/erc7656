@@ -47,7 +47,6 @@ Install it as a dependency
 ```
 npm i erc7656 @openzeppelin/contracts erc6551
 ```
-[README.md](README.md)
 Make your nft able to deploy plugins
 
 ```solidity
@@ -78,7 +77,7 @@ contract MyExpandableToken is ERC721, Ownable, ERC7656Deployer {
     uint256 tokenId
   ) external payable virtual override {
     if (_msgSender() != ownerOf(tokenId)) revert NotTheTokenOwner();
-    // passing address(0) as the manager address, since the token is the manager
+    // passing address(0) as the registry address because we use the canonical one
     _deploy(implementation, salt, address(this), tokenId, address(0));
     
   }
@@ -95,4 +94,3 @@ Notice that the plugin can be deployed by anyone, not only by the owner. Deployi
 MIT
 
 Copyright (C) 2023+ Cruna
-[README.md](README.md)
