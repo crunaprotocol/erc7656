@@ -1,6 +1,6 @@
 {
   "name": "erc7656",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "ERC7656 Reference Implementation",
   "publishConfig": {
     "access": "public"
@@ -33,7 +33,8 @@
   "license": "GPL3",
   "devDependencies": {
     "@ethersproject/contracts": "^5.7.0",
-    "@metamask/eth-sig-util": "^7.0.1",
+    "@metamask/eth-sig-util": "^7.0.3",
+    "@nomicfoundation/hardhat-verify": "^2.0.9",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
     "@openzeppelin/test-helpers": "^0.5.16",
@@ -41,36 +42,35 @@
     "@xyrusworx/hardhat-solidity-json": "^1.0.2",
     "bn.js": "^5.2.1",
     "case": "^1.6.3",
-    "chai": "^4.4.1",
+    "chai": "^4.5.0",
     "dotenv": "^16.4.5",
-    "eth-deploy-utils": "^2.0.0",
+    "eth-deploy-utils": "^2.0.1",
     "eth-sig-util": "^3.0.1",
     "ethereum-waffle": "^4.0.10",
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^5.7.2",
     "fs-extra": "^11.2.0",
-    "hardhat": "^2.22.2",
+    "hardhat": "^2.22.9",
     "hardhat-contract-sizer": "^2.10.0",
     "hardhat-gas-reporter": "^1.0.10",
-    "husky": "^9.0.11",
+    "husky": "^9.1.5",
     "keccak256": "^1.0.6",
-    "prettier": "^3.2.5",
-    "prettier-plugin-solidity": "^1.3.1",
+    "prettier": "^3.3.3",
+    "prettier-plugin-solidity": "^1.4.1",
     "pretty-quick": "^4.0.0",
     "require-or-mock": "^0.2.1",
-    "rimraf": "^5.0.5",
-    "solhint": "^4.5.4",
+    "rimraf": "^5.0.10",
+    "solhint": "^5.0.3",
     "solidity-coverage": "^0.8.12",
     "solidity-docgen": "0.6.0-beta.36",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.4"
   },
   "lint-staged": {
     "*.js": "prettier --write",
     "*.{js,css,md}": "prettier --write"
   },
   "dependencies": {
-    "@nomicfoundation/hardhat-verify": "^2.0.6",
     "@openzeppelin/contracts": "^5.0.2",
     "erc6551": "^0.3.1"
   }

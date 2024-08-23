@@ -6,14 +6,21 @@ import {IERC7656Service} from "./IERC7656Service.sol";
 // this is a reduction of IERC6551Account focusing purely on the bond between the NFT and the contract
 
 /**
- * @title IERC7656LinkedServiceExtended.sol.sol
+ * @title EIP-5313 Light Contract Ownership Standard
  */
-interface IERC7656LinkedServiceExtended is IERC7656Service {
+interface EIP5313 {
   /**
-   * @notice Returns the owner of the token
+   * @notice Get the address of the owner
+   *         In this specific case, it is the owner of the token
+   * @return The address of the owner
    */
   function owner() external view returns (address);
+}
 
+/**
+ * @title IERC7656ServiceExtended.sol.sol
+ */
+interface IERC7656ServiceExtended is IERC7656Service, EIP5313 {
   /**
    * @notice Returns the address of the token contract
    */
