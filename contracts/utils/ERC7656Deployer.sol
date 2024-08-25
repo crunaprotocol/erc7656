@@ -59,13 +59,6 @@ abstract contract ERC7656Deployer {
       );
   }
 
-  /**
-   * @notice This function deploys a token-linked contract (manager or plugin)
-   * @param implementation The address of the implementation
-   * @param salt The salt
-   * @param tokenId The tokenId
-   * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
-   */
   function _deploy(
     address implementation,
     bytes32 salt,
@@ -73,8 +66,19 @@ abstract contract ERC7656Deployer {
     uint256 tokenId,
     address registry
   ) internal virtual returns (address) {
-    return
-      IERC7656Registry(_canonicalERC7656Registry(registry)).create(implementation, salt, block.chainid, tokenAddress, tokenId);
+    address registryAddress = _canonicalERC7656Registry(registry);
+    (bool success, bytes memory returnData) = registryAddress.call(
+      abi.encodeWithSelector(
+        IERC7656Registry(registryAddress).create.selector,
+        implementation,
+        salt,
+        block.chainid,
+        tokenAddress,
+        tokenId
+      )
+    );
+    require(success, "Deploy call failed");
+    return abi.decode(returnData, (address));
   }
 
   function _canonicalERC7656Registry(address registry) internal pure returns (address) {

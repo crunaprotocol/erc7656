@@ -64,22 +64,9 @@ module.exports = {
       gasPrice: 20000000000,
       accounts: [env.DEPLOYER],
     },
-    goerli: {
-      url: `https://goerli.infura.io/v3/${env.INFURA_KEY}`,
-      gasLimit: 6000000,
-      accounts: [env.DEPLOYER],
-    },
     bsc_testnet: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
       chainId: 97,
-      // gasPrice: 20000000000,
-      gasLimit: 6000000,
-      accounts: [env.DEPLOYER],
-    },
-    mumbai: {
-      url: "https://polygon-mumbai-pokt.nodies.app",
-      // url: "https://polygon-mumbai.blockpi.network/v1/rpc/public",
-      chainId: 80001,
       // gasPrice: 20000000000,
       gasLimit: 6000000,
       accounts: [env.DEPLOYER],
