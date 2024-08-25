@@ -5,7 +5,7 @@ const path = require("path");
 const fs = require("fs-extra");
 const EthDeployUtils = require("eth-deploy-utils");
 let deployUtils;
-const canonicalBytecodes = require("./canonicalBytecodes.json");
+// const canonicalBytecodes = require("./canonicalBytecodes.json");
 
 async function main() {
   deployUtils = new EthDeployUtils(path.resolve(__dirname, ".."), console.log);
