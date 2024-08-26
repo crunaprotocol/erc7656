@@ -81,6 +81,6 @@ abstract contract ERC7656Deployer {
     if (registry != address(0)) {
       return registry;
     }
-    return 0x7656CCCC1d93430f4E43A7ea0981C01469c9D6A2;
+    return 0x7656f0fB4Ca6973cf99D910B36705a2dEDA97eA1;
   }
 }
