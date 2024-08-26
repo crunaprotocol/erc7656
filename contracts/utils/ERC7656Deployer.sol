@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 // Author: Francesco Sullo <francesco@sullo.co>
 //
 import {ERC6551AccountLib} from "erc6551/lib/ERC6551AccountLib.sol";
-import {IERC7656Registry} from "../IERC7656Registry.sol";
+import {IERC7656Registry} from "../interfaces/IERC7656Registry.sol";
 
 /**
  * @title ERC7656Deployer
@@ -64,7 +64,7 @@ abstract contract ERC7656Deployer {
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
-   * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
+   * @param registry The address of the ERC7656Registry. If set to address(0), the canonical registry deployed by Cruna Protocol will be used
    */
   function _deploy(
     address implementation,
