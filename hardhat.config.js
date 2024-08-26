@@ -125,6 +125,12 @@ module.exports = {
       accounts: [env.DEPLOYER],
       gasPrice: 1000000000,
     },
+    arbitrumSepolia: {
+      url: "https://sepolia-rollup.arbitrum.io/rpc",
+      chainId: 421614,
+      gasLimit: 1000000000,
+      accounts: [env.DEPLOYER],
+    },
   },
   etherscan: {
     // Your API key for Etherscan

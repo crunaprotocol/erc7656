@@ -32,6 +32,7 @@ and the following testnets:
 Avalanche Fuji
 Celo Alfajores
 Base Sepolia
+Arbitrum Sepolia
 ```
 
 The code has been verified on most mainnets. 
