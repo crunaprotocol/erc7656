@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {IERC165, IERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC6551AccountLib} from "erc6551/lib/ERC6551AccountLib.sol";
 
-import {IERC7656Service, IERC7656ServiceExtended, EIP5313} from "./IERC7656ServiceExtended.sol";
+import {IERC7656Service, IERC7656ServiceExtended, EIP5313} from "../interfaces/IERC7656ServiceExtended.sol";
 
 //import "hardhat/console.sol";
 
@@ -12,7 +12,7 @@ import {IERC7656Service, IERC7656ServiceExtended, EIP5313} from "./IERC7656Servi
  * @title ERC7656Service.sol.sol
  * @notice Abstract contract to link a contract to an NFT
  */
-abstract contract ERC7656Service is IERC7656ServiceExtended, IERC165 {
+abstract contract ERC7656ServiceExtended is IERC7656ServiceExtended, IERC165 {
   function supportsInterface(bytes4 interfaceId) public pure virtual returns (bool) {
     return
       interfaceId == type(IERC7656Service).interfaceId ||

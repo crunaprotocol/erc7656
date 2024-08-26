@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 // Modified registry based on ERC6551Registry
 // https://github.com/erc6551/reference/blob/main/src/ERC6551Registry.sol
 
-import {IERC7656Registry} from "./IERC7656Registry.sol";
+import {IERC7656Registry} from "./interfaces/IERC7656Registry.sol";
 
 contract ERC7656Registry is IERC7656Registry {
   function create(
