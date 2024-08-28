@@ -14,6 +14,7 @@ library ERC6551BytecodeLib {
     address tokenContract,
     uint256 tokenId
   ) internal pure returns (bytes memory result) {
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       result := mload(0x40) // Grab the free memory pointer
       // Layout the variables and bytecode backwards
@@ -35,6 +36,7 @@ library ERC6551BytecodeLib {
    * @return result The create2 address computed from `salt`, `bytecodeHash`, `deployer`
    */
   function computeAddress(bytes32 salt, bytes32 bytecodeHash, address deployer) internal pure returns (address result) {
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       result := mload(0x40) // Grab the free memory pointer
       mstore8(result, 0xff)

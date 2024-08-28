@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/Create2.sol";
-import "./ERC6551BytecodeLib.sol";
+import {Create2} from "@openzeppelin/contracts/utils/Create2.sol";
+import {ERC6551BytecodeLib} from "./ERC6551BytecodeLib.sol";
 
 library ERC6551AccountLib {
   function computeAddress(
@@ -38,6 +38,7 @@ library ERC6551AccountLib {
   }
 
   function implementation(address account) internal view returns (address _implementation) {
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       // copy proxy implementation (0x14 bytes)
       extcodecopy(account, 0xC, 0xA, 0x14)
@@ -51,7 +52,7 @@ library ERC6551AccountLib {
 
   function token(address account) internal view returns (uint256, address, uint256) {
     bytes memory encodedData = new bytes(0x60);
-
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       // copy 0x60 bytes from end of context
       extcodecopy(account, add(encodedData, 0x20), 0x4d, 0x60)
@@ -66,7 +67,7 @@ library ERC6551AccountLib {
 
   function salt(address account) internal view returns (bytes32) {
     bytes memory encodedData = new bytes(0x20);
-
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       // copy 0x20 bytes from beginning of context
       extcodecopy(account, add(encodedData, 0x20), 0x2d, 0x20)
@@ -81,7 +82,7 @@ library ERC6551AccountLib {
 
   function context(address account) internal view returns (bytes32, uint256, address, uint256) {
     bytes memory encodedData = new bytes(0x80);
-
+    // solhint-disable-next-line no-inline-assembly
     assembly {
       // copy full context (0x80 bytes)
       extcodecopy(account, add(encodedData, 0x20), 0x2D, 0x80)
