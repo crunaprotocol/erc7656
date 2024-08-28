@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
+// Taken from https://github.com/erc6551/reference/tree/main/src/lib
+// to avoid future possibile incompatibilities
+
 library ERC6551BytecodeLib {
   /**
    * @dev Returns the creation code of the token bound account for a non-fungible token.

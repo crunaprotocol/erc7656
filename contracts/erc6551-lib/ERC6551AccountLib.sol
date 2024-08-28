@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// Taken from https://github.com/erc6551/reference/tree/main/src/lib
+// to avoid future possibile incompatibilities
+
 import {Create2} from "@openzeppelin/contracts/utils/Create2.sol";
 import {ERC6551BytecodeLib} from "./ERC6551BytecodeLib.sol";
 
