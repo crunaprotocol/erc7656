@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import {ERC6551AccountLib} from "./erc6551-lib/ERC6551AccountLib.sol";
+import {ERC6551AccountLib} from "./lib/ERC6551AccountLib.sol";
 
 import {IERC7656Service} from "./interfaces/IERC7656Service.sol";
 
