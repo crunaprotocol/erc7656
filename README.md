@@ -86,9 +86,7 @@ contract MyExpandableToken is ERC721, Ownable, ERC7656Deployer {
 }
 ```
 
-For more elaborate example, take a look at the [Cruna Protocol](https://github.com/crunaprotocol/cruna-protocol).
-
-Notice that the plugin can be deployed by anyone, not only by the owner. Deploying it from the token itself, however, allows for more controls; for example, if executing an initializing function allowed only by the token owner.
+Notice that anyone can deploy a service owned by a specific token, usign whatever salt they prefer. To avoid troubles and security issues, any initial setup must be designed so that, despite who is the deployer, the result is what is expected to be. For example, if a service must get some information from the token, it should be the service the one that queries the token, not the other way around. In other words, passing any parameter to the service during the deploying opens to the possibility of a malicious deployer to pass a different set of data causing the service to behave unexpectedly. 
 
 ## License
 
