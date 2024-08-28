@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 // Author: Francesco Sullo <francesco@sullo.co>
 //
-import {ERC6551AccountLib} from "erc6551/lib/ERC6551AccountLib.sol";
+import {ERC6551AccountLib} from "../erc6551-lib/ERC6551AccountLib.sol";
 import {IERC7656Registry} from "../interfaces/IERC7656Registry.sol";
 
 /**

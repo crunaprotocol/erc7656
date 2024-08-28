@@ -46,7 +46,7 @@ https://blockscan.com/address/0x7656f0fB4Ca6973cf99D910B36705a2dEDA97eA1
 
 Install it as a dependency
 ```
-npm i erc7656 @openzeppelin/contracts erc6551
+npm i erc7656 @openzeppelin/contracts
 ```
 Make your nft able to deploy plugins
 
@@ -85,6 +85,10 @@ contract MyExpandableToken is ERC721, Ownable, ERC7656Deployer {
   
 }
 ```
+
+To make your plugin extend `exr7656/ERC7656Service.sol` or `erc7656/extensions/ERC7656ServiceExt`.
+
+---
 
 Notice that anyone can deploy a service owned by a specific token, usign whatever salt they prefer. To avoid troubles and security issues, any initial setup must be designed so that, despite who is the deployer, the result is what is expected to be. For example, if a service must get some information from the token, it should be the service the one that queries the token, not the other way around. In other words, passing any parameter to the service during the deploying opens to the possibility of a malicious deployer to pass a different set of data causing the service to behave unexpectedly. 
 
