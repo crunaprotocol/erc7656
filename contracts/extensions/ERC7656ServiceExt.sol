@@ -4,15 +4,15 @@ pragma solidity ^0.8.20;
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC6551AccountLib} from "erc6551/lib/ERC6551AccountLib.sol";
 
-import {EIP5313} from "./interfaces/EIP5313.sol";
-import {IERC7656ServiceExt} from "./interfaces/IERC7656ServiceExt.sol";
-import {IERC7656Service} from "./interfaces/IERC7656Service.sol";
-import {ERC7656Service} from "./ERC7656Service.sol";
+import {EIP5313} from "../interfaces/EIP5313.sol";
+import {IERC7656ServiceExt} from "./IERC7656ServiceExt.sol";
+import {IERC7656Service} from "../interfaces/IERC7656Service.sol";
+import {ERC7656Service} from "../ERC7656Service.sol";
 
 //import "hardhat/console.sol";
 
 /**
- * @title ERC7656ServiceExt.sol
+ * @title ERC7656ServiceExt.sol.sol.sol
  * @notice Abstract contract to link a contract to an NFT
  */
 abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt, EIP5313 {
