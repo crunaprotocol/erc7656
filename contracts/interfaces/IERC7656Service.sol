@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 /**
  * @title IERC7656Service.sol.sol.sol
+ *   InterfaceId 0xfc0c546a
  */
 interface IERC7656Service {
   /**
