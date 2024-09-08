@@ -7,7 +7,7 @@ pragma solidity ^0.8.20;
  * https://github.com/erc6551/reference/blob/main/src/ERC6551Registry.sol
  *
  * The ERC165 interfaceId is 0xc6bdc908
- * @notice Manages the creation of token linked accounts
+ * @notice Manages the creation of token linked services
  */
 interface IERC7656Registry {
   /**
@@ -34,15 +34,15 @@ interface IERC7656Registry {
   error CreationFailed();
 
   /**
-   * @notice Creates a token linked account for a non-fungible token.
-   * If account has already been created, returns the account address without calling create2.
+   * @notice Creates a token linked service for a non-fungible token.
+   * If service has already been created, returns the service address without calling create2.
    * @param implementation The address of the implementation contract
    * @param salt The salt to use for the create2 operation
-   * @param chainId The chain id of the chain where the account is being created
+   * @param chainId The chain id of the chain where the service is being created
    * @param tokenContract The address of the token contract
    * @param tokenId The id of the token
    * Emits Created event.
-   * @return account The address of the token linked account
+   * @return service The address of the token linked service
    */
   function create(
     address implementation,
@@ -50,16 +50,16 @@ interface IERC7656Registry {
     uint256 chainId,
     address tokenContract,
     uint256 tokenId
-  ) external returns (address account);
+  ) external returns (address service);
 
   /**
-   * @notice Returns the computed token linked account address for a non-fungible token.
+   * @notice Returns the computed token linked service address for a non-fungible token.
    * @param implementation The address of the implementation contract
    * @param salt The salt to use for the create2 operation
-   * @param chainId The chain id of the chain where the account is being created
+   * @param chainId The chain id of the chain where the service is being created
    * @param tokenContract The address of the token contract
    * @param tokenId The id of the token
-   * @return account The address of the token linked account
+   * @return service The address of the token linked service
    */
   function compute(
     address implementation,
@@ -67,5 +67,5 @@ interface IERC7656Registry {
     uint256 chainId,
     address tokenContract,
     uint256 tokenId
-  ) external view returns (address account);
+  ) external view returns (address service);
 }
