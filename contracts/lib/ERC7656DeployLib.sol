@@ -10,22 +10,22 @@ import {IERC7656Registry} from "../interfaces/IERC7656Registry.sol";
  * @title ERC7656Deployer
  * @notice This contract manages deploy-related functions
  */
-abstract contract ERC7656Deployer {
+library ERC7656DeployLib {
   /**
-   * @notice This function deploys a token-linked contract (manager or plugin)
+   * @notice It deploys a token-linked contract (manager or plugin)
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
    * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
    */
-  function _isDeployed(
+  function isDeployed(
     address implementation,
     bytes32 salt,
     address tokenAddress,
     uint256 tokenId,
     address registry
-  ) internal view virtual returns (bool) {
-    address _addr = _addressOf(implementation, salt, tokenAddress, tokenId, _canonicalERC7656Registry(registry));
+  ) internal view returns (bool) {
+    address _addr = addressOf(implementation, salt, tokenAddress, tokenId, canonicalERC7656Registry(registry));
     uint32 size;
     // solhint-disable-next-line no-inline-assembly
     assembly {
@@ -35,22 +35,22 @@ abstract contract ERC7656Deployer {
   }
 
   /**
-   * @notice Internal function to return the address of a token linked contract
+   * @notice Returns the address of a token linked contract
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
    * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
    */
-  function _addressOf(
+  function addressOf(
     address implementation,
     bytes32 salt,
     address tokenAddress,
     uint256 tokenId,
     address registry
-  ) internal view virtual returns (address) {
+  ) internal view returns (address) {
     return
       ERC6551AccountLib.computeAddress(
-        _canonicalERC7656Registry(registry),
+        canonicalERC7656Registry(registry),
         implementation,
         salt,
         block.chainid,
@@ -66,18 +66,18 @@ abstract contract ERC7656Deployer {
    * @param tokenId The tokenId
    * @param registry The address of the ERC7656Registry. If set to address(0), the canonical registry deployed by Cruna Protocol will be used
    */
-  function _deploy(
+  function deploy(
     address implementation,
     bytes32 salt,
     address tokenAddress,
     uint256 tokenId,
     address registry
-  ) internal virtual returns (address) {
+  ) internal returns (address) {
     return
-      IERC7656Registry(_canonicalERC7656Registry(registry)).create(implementation, salt, block.chainid, tokenAddress, tokenId);
+      IERC7656Registry(canonicalERC7656Registry(registry)).create(implementation, salt, block.chainid, tokenAddress, tokenId);
   }
 
-  function _canonicalERC7656Registry(address registry) internal pure returns (address) {
+  function canonicalERC7656Registry(address registry) internal pure returns (address) {
     if (registry != address(0)) {
       return registry;
     }

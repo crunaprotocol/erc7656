@@ -55,11 +55,11 @@ Make your nft able to deploy plugins
 // Compatible with OpenZeppelin Contracts ^5.0.0
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "erc7656/utils/ERC7656Deployer.sol";
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {ERC7656DeployLib} from "erc7656/utils/ERC7656DeployLib.sol";
 
-contract MyExpandableToken is ERC721, Ownable, ERC7656Deployer {
+contract MyExpandableToken is ERC721, Ownable {
   
   error NotTheTokenOwner();
   
@@ -79,7 +79,7 @@ contract MyExpandableToken is ERC721, Ownable, ERC7656Deployer {
   ) external payable virtual override {
     if (_msgSender() != ownerOf(tokenId)) revert NotTheTokenOwner();
     // passing address(0) as the registry address because we use the canonical one
-    _deploy(implementation, salt, address(this), tokenId, address(0));
+    ERC7656DeployLib.deploy(implementation, salt, address(this), tokenId, address(0));
     
   }
   
