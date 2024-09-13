@@ -13,7 +13,7 @@ process.on('warning', (warning) => {
 });
 
 require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-waffle");
+// require("@nomiclabs/hardhat-waffle");
 require("@xyrusworx/hardhat-solidity-json");
 
 require("@nomicfoundation/hardhat-verify");

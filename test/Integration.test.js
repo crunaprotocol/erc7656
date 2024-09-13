@@ -16,8 +16,6 @@ const {
   getInterfaceId,
   deployRegistry
 } = require("./helpers");
-const path = require('path');
-const fs = require('fs-extra');
 
 describe("Integration test", function () {
   let registry;
