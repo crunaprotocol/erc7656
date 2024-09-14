@@ -16,8 +16,6 @@ const {
   getInterfaceId,
   deployRegistry
 } = require("./helpers");
-const path = require('path');
-const fs = require('fs-extra');
 
 describe("Integration test", function () {
   let registry;
@@ -37,9 +35,10 @@ describe("Integration test", function () {
         bytecodes.bytecode,
         bytecodes.salt,
     );
-    expect(registry.address).equal(bytecodes.address);
-    expect(await getInterfaceId("IERC7656Registry")).equal("0xc6bdc908");
-    expect(await getInterfaceId("IERC7656Service")).equal("0xfc0c546a");
+    const registryAddress = await registry.getAddress();
+    expect(registryAddress).equal(bytecodes.address);
+    expect(await getInterfaceId("IERC7656Registry")).equal("c6bdc908");
+    expect(await getInterfaceId("IERC7656Service")).equal("fc0c546a");
 
   });
 

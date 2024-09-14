@@ -1,8 +1,8 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
 const { assert, expect } = require("chai");
-const BN = require("bn.js");
-const ethSigUtil = require("eth-sig-util");
+// const BN = require("bn.js");
+// const ethSigUtil = require("eth-sig-util");
 const path = require('path');
 const fs = require('fs-extra');
 const deployUtils = new (require("eth-deploy-utils"))();
@@ -65,8 +65,8 @@ const Helpers = {
   },
 
   async getChainId() {
-    const chainId = (await hre.ethers.provider.getNetwork()).chainId;
-    return new BN(chainId, 10);
+    const network = await hre.ethers.provider.getNetwork();
+    return network.chainId;
   },
 
   async getTimestamp() {
@@ -81,7 +81,7 @@ const Helpers = {
   },
 
   amount(str) {
-    return ethers.utils.parseEther(str);
+    return ethers.parseEther(str);
   },
 
   normalize(amount, decimals = 18) {
@@ -103,8 +103,8 @@ const Helpers = {
   },
 
   keccak256(str) {
-    const bytes = ethers.utils.toUtf8Bytes(str);
-    return ethers.utils.keccak256(bytes);
+    const bytes = ethers.toUtf8Bytes(str);
+    return ethers.keccak256(bytes);
   },
 
   async selectorId(interfaceName, functionName) {
@@ -115,7 +115,7 @@ const Helpers = {
     functions.forEach((func) => {
       const str = func.name + "(" + func.inputs.map((input) => input.type).join(",") + ")";
       if (func.name === functionName) {
-        selector = ethers.utils.id(str).slice(0, 10);
+        selector = ethers.id(str).slice(0, 10);
       }
     });
     return selector;
@@ -125,12 +125,12 @@ const Helpers = {
     const artifact = await hre.artifacts.readArtifact(interfaceName);
     const abi = artifact.abi;
     const functions = abi.filter((item) => item.type === "function");
-    let interfaceId = ethers.constants.Zero;
+    let interfaceId = 0n; // Initialize with BigInt 0
     functions.forEach((func) => {
-      const selector = ethers.utils.id(func.name + "(" + func.inputs.map((input) => input.type).join(",") + ")").slice(0, 10);
-      interfaceId = interfaceId.xor(selector);
+      const selector = ethers.id(func.name + "(" + func.inputs.map((input) => input.type).join(",") + ")").slice(0, 10);
+      interfaceId ^= BigInt(`0x${selector.slice(2)}`);
     });
-    return interfaceId.toHexString();
+    return interfaceId.toString(16).padStart(8, '0');
   },
 
   async executeAndReturnGasCost(call) {

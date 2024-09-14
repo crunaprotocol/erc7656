@@ -12,8 +12,8 @@ process.on('warning', (warning) => {
   console.log(warning.stack);
 });
 
-require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-waffle");
+require("@nomicfoundation/hardhat-ethers");
+// require("@nomiclabs/hardhat-waffle");
 require("@xyrusworx/hardhat-solidity-json");
 
 require("@nomicfoundation/hardhat-verify");
