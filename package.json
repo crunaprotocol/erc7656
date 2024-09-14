@@ -46,7 +46,7 @@
     "case": "^1.6.3",
     "chai": "^4.5.0",
     "dotenv": "^16.4.5",
-    "eth-deploy-utils": "3.0.0-beta.0",
+    "eth-deploy-utils": "^3.0.0",
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^6.13.2",
