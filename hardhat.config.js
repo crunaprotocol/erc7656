@@ -12,7 +12,7 @@ process.on('warning', (warning) => {
   console.log(warning.stack);
 });
 
-require("@nomiclabs/hardhat-ethers");
+require("@nomicfoundation/hardhat-ethers");
 // require("@nomiclabs/hardhat-waffle");
 require("@xyrusworx/hardhat-solidity-json");
 
