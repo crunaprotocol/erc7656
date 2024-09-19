@@ -12,7 +12,8 @@ async function main() {
 
   let deployer;
   const chainId = await deployUtils.currentChainId();
-  const isLocalhost = chainId === 1337;
+
+  const isLocalhost = Number(chainId) === 1337;
   [deployer] = await ethers.getSigners();
 
   const bytecodesPath = path.resolve(
