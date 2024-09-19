@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {IGuardian} from "../../IGuardian.sol";
-import {SimpleTimeController} from "./SimpleTimeController.sol";
+import {SimpleTimeController} from "../../../SimpleTimeController.sol";
 
 /**
  * @title ISimpleTimeControllerGuardian.sol.sol

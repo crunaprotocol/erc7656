@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {SimpleTimeController} from "./SimpleTimeController.sol";
+import {SimpleTimeController} from "../../../SimpleTimeController.sol";
 import {ISimpleTimeControllerGuardian} from "./ISimpleTimeControllerGuardian.sol";
 
 //import "hardhat/console.sol";
