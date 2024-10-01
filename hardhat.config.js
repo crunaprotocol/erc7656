@@ -90,8 +90,7 @@ module.exports = {
       chainId: 137,
     },
     amoy: {
-      // url: "https://rpc-amoy.polygon.technology/",
-      url: "https://polygon-amoy-bor-rpc.publicnode.com",
+      url: "https://rpc-amoy.polygon.technology",
       chainId: 80002,
       // gasPrice: 20000000000,
       gasLimit: 6000000,
