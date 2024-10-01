@@ -29,6 +29,7 @@ Base
 ```
 and the following testnets:
 ```
+Sepolia
 Avalanche Fuji
 Celo Alfajores
 Base Sepolia

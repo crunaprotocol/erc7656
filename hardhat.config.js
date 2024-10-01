@@ -131,14 +131,19 @@ module.exports = {
       gasLimit: 1000000000,
       accounts: [env.DEPLOYER],
     },
+    sepolia: {
+      url: "https://sepolia.infura.io/v3/" + env.INFURA_KEY,
+      chainId: 11155111,
+      accounts: [env.DEPLOYER],
+    },
   },
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
     apiKey:
-     // env.POLYGONSCAN_API_KEY,
-     // env.ETHERSCAN_API_KEY,
-    env.BSCSCAN_KEY
+    // env.POLYGONSCAN_API_KEY,
+    env.ETHERSCAN_API_KEY,
+    // env.BSCSCAN_KEY
 
   },
   sourcify: {
