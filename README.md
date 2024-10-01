@@ -34,6 +34,7 @@ Avalanche Fuji
 Celo Alfajores
 Base Sepolia
 Arbitrum Sepolia
+Polygon Amoy
 ```
 
 The code has been verified on most mainnets. 
