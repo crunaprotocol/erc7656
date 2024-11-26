@@ -70,3 +70,4 @@ tmp
 /scripts/deploy-debug*
 /skipped
 /backup_contracts
+/local-config.js
