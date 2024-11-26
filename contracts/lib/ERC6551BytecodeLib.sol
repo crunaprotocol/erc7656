@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 // Taken from https://github.com/erc6551/reference/tree/main/src/lib
-// to avoid future possibile incompatibilities
+// to avoid future possible incompatibilities
 
 library ERC6551BytecodeLib {
   /**
