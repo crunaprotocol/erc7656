@@ -16,7 +16,7 @@ library ERC7656DeployLib {
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
-   * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
+   * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna will be used
    */
   function isDeployed(
     address implementation,
@@ -39,7 +39,7 @@ library ERC7656DeployLib {
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
-   * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna Protocol will be used
+   * @param registry The address of the ERC7656Registry. If not set, the canonical registry deployed by Cruna will be used
    */
   function addressOf(
     address implementation,
@@ -64,7 +64,7 @@ library ERC7656DeployLib {
    * @param implementation The address of the implementation
    * @param salt The salt
    * @param tokenId The tokenId
-   * @param registry The address of the ERC7656Registry. If set to address(0), the canonical registry deployed by Cruna Protocol will be used
+   * @param registry The address of the ERC7656Registry. If set to address(0), the canonical registry deployed by Cruna will be used
    */
   function deploy(
     address implementation,
