@@ -24,19 +24,10 @@ abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt, EIP53
   }
 
   /**
-   * @notice Returns the token linked to the contract
-   */
-  function token() public view virtual override(ERC7656Service, IERC7656Service) returns (uint256, address, uint256) {
-    return ERC6551AccountLib.token();
-  }
-
-  /**
    * @notice Returns the owner of the token
    */
   function owner() public view virtual override returns (address) {
-    (uint256 chainId, address tokenContract_, uint256 tokenId_) = ERC6551AccountLib.token();
-    if (chainId != block.chainid) return address(0);
-    return IERC721(tokenContract_).ownerOf(tokenId_);
+    return _owner();
   }
 
   /**
@@ -50,22 +41,44 @@ abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt, EIP53
    * @notice Returns the address of the token contract
    */
   function tokenAddress() public view virtual override returns (address) {
-    (, address tokenContract_, ) = ERC6551AccountLib.token();
-    return tokenContract_;
+    return _tokenAddress();
   }
 
   /**
    * @notice Returns the tokenId of the token
    */
   function tokenId() public view virtual override returns (uint256) {
-    (, , uint256 tokenId_) = ERC6551AccountLib.token();
-    return tokenId_;
+    return _tokenId();
   }
 
   /**
    * @notice Returns the implementation used when creating the contract
    */
   function implementation() public view virtual override returns (address) {
+    return _implementation();
+  }
+
+  /**
+   * Private functions
+   */
+
+  function _owner() internal view returns (address) {
+    (uint256 chainId, address tokenContract_, uint256 tokenId_) = ERC6551AccountLib.token();
+    if (chainId != block.chainid) return address(0);
+    return IERC721(tokenContract_).ownerOf(tokenId_);
+  }
+
+  function _tokenAddress() internal view returns (address) {
+    (, address tokenContract_, ) = ERC6551AccountLib.token();
+    return tokenContract_;
+  }
+
+  function _tokenId() internal view returns (uint256) {
+    (, , uint256 tokenId_) = ERC6551AccountLib.token();
+    return tokenId_;
+  }
+
+  function _implementation() internal view returns (address) {
     return ERC6551AccountLib.implementation();
   }
 

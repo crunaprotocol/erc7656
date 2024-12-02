@@ -21,6 +21,14 @@ contract ERC7656Service is IERC7656Service, IERC165 {
    * @notice Returns the token linked to the contract
    */
   function token() public view virtual override returns (uint256, address, uint256) {
+    return _token();
+  }
+
+  /**
+   * Private functions
+   */
+
+  function _token() internal view returns (uint256, address, uint256) {
     return ERC6551AccountLib.token();
   }
 
