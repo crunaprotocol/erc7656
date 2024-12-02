@@ -6,7 +6,6 @@ import {ERC6551AccountLib} from "../lib/ERC6551AccountLib.sol";
 
 import {EIP5313} from "../interfaces/EIP5313.sol";
 import {IERC7656ServiceExt} from "./IERC7656ServiceExt.sol";
-import {IERC7656Service} from "../interfaces/IERC7656Service.sol";
 import {ERC7656Service} from "../ERC7656Service.sol";
 
 //import "hardhat/console.sol";
