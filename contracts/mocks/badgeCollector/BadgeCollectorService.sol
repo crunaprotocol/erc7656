@@ -7,7 +7,7 @@ import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Recei
 import {Context} from "@openzeppelin/contracts/utils/Context.sol";
 import {ERC7656ServiceExt, IERC7656ServiceExt} from "../../extensions/ERC7656ServiceExt.sol";
 
-abstract contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, Context {
+contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, Context {
   event BadgeCollected(address indexed badgeAddress, uint256 indexed badgeTokenId, address from, uint256 timestamp);
 
   error InvalidValidity();

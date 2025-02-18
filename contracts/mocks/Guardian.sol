@@ -1,19 +1,24 @@
 // SPDX-License-Identifier: GPL3
 pragma solidity ^0.8.0;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-
 /** @notice Minimalistic guardian to trust plugins implementations.
  * In real world usages, it would be better to use a governed, time controlled guardian
  */
-contract Guardian is Ownable {
+contract Guardian {
+  address public owner;
   mapping(address => bool) private _trusted;
 
   event Trusted(address indexed implementation);
 
-  constructor(address admin) Ownable(admin) {}
+  // Remove the constructor and replace it with an initialize function
+  function initialize(address owner_) public {
+    if (owner == address(0)) {
+      owner = owner_;
+    } else revert("Already initialized");
+  }
 
-  function trust(address implementation) external onlyOwner {
+  function trust(address implementation) external {
+    if (msg.sender != owner) revert("Not authorized");
     _trusted[implementation] = true;
     emit Trusted(implementation);
   }

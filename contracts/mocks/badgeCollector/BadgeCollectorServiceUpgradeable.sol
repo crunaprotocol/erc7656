@@ -8,9 +8,7 @@ import {IERC7656ServiceExt} from "../../extensions/ERC7656ServiceExt.sol";
 import {Guardian} from "../Guardian.sol";
 import {BadgeCollectorService} from "./BadgeCollectorService.sol";
 
-contract BadgeCollectorUpgradeable is BadgeCollectorService {
-  Guardian public guardian;
-
+contract BadgeCollectorServiceUpgradeable is BadgeCollectorService {
   /**
    * @notice Storage slot with the address of the current implementation.
    * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1, and is
@@ -25,15 +23,12 @@ contract BadgeCollectorUpgradeable is BadgeCollectorService {
   error PluginRequiresNewerManager(uint256 requiredVersion);
   error ZeroAddress();
 
-  constructor(address guardian_) {
-    if (guardian_ == address(0)) revert ZeroAddress();
-    guardian = Guardian(guardian_);
-  }
-
   // It is the plugin's responsibility to be sure that the new implementation is trusted
   function upgrade(address implementation_) external virtual {
     if (owner() != _msgSender()) revert NotTheTokenOwner();
     if (implementation_ == address(0)) revert ZeroAddress();
+    // hardcoded because deployed, in this example, via Nick's factory
+    Guardian guardian = Guardian(0xDC6803bE2AEdEf0383E25AB1f81959B048E614A4);
     bool trusted = guardian.trusted(implementation_);
     if (!trusted) revert NotTrustedImplementation();
     IERC7656ServiceExt impl = IERC7656ServiceExt(implementation_);
