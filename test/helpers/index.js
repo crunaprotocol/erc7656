@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const deployUtils = new (require("eth-deploy-utils"))();
 const { artifacts } = hre;
+const erc7656Bytecode = require("../../contracts/bytecode.json");
 
 function debug(...params) {
   if (process.env.NODE_ENV !== "test") {
@@ -105,6 +106,16 @@ const Helpers = {
   keccak256(str) {
     const bytes = ethers.toUtf8Bytes(str);
     return ethers.keccak256(bytes);
+  },
+
+  async deployCanonical(deployer) {
+    await deployUtils.deployNickSFactory(deployer);
+    return deployUtils.deployBytecodeViaNickSFactory(
+        deployer,
+        "ERC7656Registry",
+        erc7656Bytecode.bytecode,
+        erc7656Bytecode.salt,
+    );
   },
 
   async selectorId(interfaceName, functionName) {

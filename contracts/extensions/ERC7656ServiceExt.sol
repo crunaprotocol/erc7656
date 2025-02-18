@@ -81,6 +81,14 @@ abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt, EIP53
     return ERC6551AccountLib.implementation();
   }
 
+  function version() external pure virtual returns (uint256) {
+    return _version();
+  }
+
+  function _version() internal pure virtual returns (uint256) {
+    return 1_000_000;
+  }
+
   // @dev This empty reserved space is put in place to allow future versions
   // to add new variables without shifting down storage in the inheritance
   // chain when writing upgradeable contracts.

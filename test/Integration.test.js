@@ -42,6 +42,7 @@ describe("Integration test", function () {
 
   });
 
-  it("should deploy everything as expected", async function () {});
+  it("should deploy everything as expected", async function () {
+  });
 
 });
