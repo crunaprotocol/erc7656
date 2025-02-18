@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import {ERC6551AccountLib} from "./lib/ERC6551AccountLib.sol";
+import {SimplifiedERC6551AccountLib} from "./lib/SimplifiedERC6551AccountLib.sol";
 
 import {IERC7656Service} from "./interfaces/IERC7656Service.sol";
 
@@ -29,7 +29,7 @@ contract ERC7656Service is IERC7656Service, IERC165 {
    */
 
   function _token() internal view returns (uint256, address, uint256) {
-    return ERC6551AccountLib.token();
+    return SimplifiedERC6551AccountLib.token();
   }
 
   // @dev This empty reserved space is put in place to allow future versions

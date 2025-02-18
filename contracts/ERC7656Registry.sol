@@ -4,6 +4,12 @@ pragma solidity ^0.8.20;
 // Modified registry based on ERC6551Registry
 // https://github.com/erc6551/reference/blob/main/src/ERC6551Registry.sol
 
+// Original authors: Jayden Windle @jaydenwindle and Vectorized @vectorized
+// Adapted by: Francesco Sullo @sullof
+
+// This contract has been deployed on many chain at
+// 0x7656f0fB4Ca6973cf99D910B36705a2dEDA97eA1
+
 import {IERC7656Registry} from "./interfaces/IERC7656Registry.sol";
 
 contract ERC7656Registry is IERC7656Registry {
