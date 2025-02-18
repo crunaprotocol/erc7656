@@ -12,7 +12,10 @@
     "testnets": [
       44787,
       43113,
-      84532
+      84532,
+      11155111,
+      421614,
+      80002
     ]
   },
   "README": "If you deploy it to other network, please raise a PR to update the `deployedTo` field."
