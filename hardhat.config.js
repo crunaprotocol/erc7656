@@ -8,8 +8,9 @@ process.on('warning', (warning) => {
 require("@nomicfoundation/hardhat-ethers");
 // require("@nomiclabs/hardhat-waffle");
 require("@xyrusworx/hardhat-solidity-json");
-
+require("solidity-coverage");
 require("@nomicfoundation/hardhat-verify");
+require("@nomicfoundation/hardhat-chai-matchers");
 
 /**
  * @type import('hardhat/config').HardhatUserConfig

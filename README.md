@@ -50,49 +50,18 @@ Install it as a dependency
 ```
 npm i erc7656 @openzeppelin/contracts
 ```
-Make your nft able to deploy plugins
-
-```solidity
-// SPDX-License-Identifier: MIT
-// Compatible with OpenZeppelin Contracts ^5.0.0
-pragma solidity ^0.8.20;
-
-import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {ERC7656DeployLib} from "erc7656/utils/ERC7656DeployLib.sol";
-
-contract MyExpandableToken is ERC721, Ownable {
-  
-  error NotTheTokenOwner();
-  
-  constructor(address initialOwner) 
-    ERC721("MyExpandableToken", "MET") 
-    Ownable(initialOwner) {
-  }
-
-  function safeMint(address to, uint256 tokenId) public onlyOwner {
-    _safeMint(to, tokenId);
-  }
-
-  function deployContractsOwnedByTheTokenId(
-    address implementation,
-    bytes32 salt,
-    uint256 tokenId
-  ) external payable virtual override {
-    if (_msgSender() != ownerOf(tokenId)) revert NotTheTokenOwner();
-    // passing address(0) as the registry address because we use the canonical one
-    ERC7656DeployLib.deploy(implementation, salt, address(this), tokenId, address(0));
-    
-  }
-  
-}
-```
 
 To make your plugin extend `exr7656/ERC7656Service.sol` or `erc7656/extensions/ERC7656ServiceExt`.
 
+Look at `BadgeCollector.sol` for a simple example.
+
 ---
 
-Notice that anyone can deploy a service owned by a specific token, usign whatever salt they prefer. To avoid troubles and security issues, any initial setup must be designed so that, despite who is the deployer, the result is what is expected to be. For example, if a service must get some information from the token, it should be the service the one that queries the token, not the other way around. In other words, passing any parameter to the service during the deploying opens to the possibility of a malicious deployer to pass a different set of data causing the service to behave unexpectedly. 
+Notice that anyone can deploy a service owned by a specific token, using whatever salt they prefer. To avoid troubles and security issues, any initial setup must be designed so that, despite who is the deployer, the result is what is expected to be. For example, if a service must get some information from the token, it should be the service the one that queries the token, not the other way around. In other words, passing any parameter to the service during the deploying opens to the possibility of a malicious deployer to pass a different set of data causing the service to behave unexpectedly. 
+
+## Note about the tests
+
+The test coverage of this repo is close to 100% but if you run the coverage script you will get ~92% because Solidity-coverage seems unable to see that the function `create` and `compute` in `ERC7656Registry` are actually tested. If anyone has any idea how to fix this, please let me know.
 
 ## License
 
