@@ -5,8 +5,6 @@ pragma solidity ^0.8.0;
 // to avoid future possible incompatibilities
 // Simplified to remove unnecessary functions
 
-import {Create2} from "@openzeppelin/contracts/utils/Create2.sol";
-
 library SimplifiedERC6551AccountLib {
   function implementation(address account) internal view returns (address _implementation) {
     // solhint-disable-next-line no-inline-assembly
