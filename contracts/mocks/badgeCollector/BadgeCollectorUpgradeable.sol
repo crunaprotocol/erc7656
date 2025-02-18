@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 // Author: Francesco Sullo <francesco@sullo.co>
 
 import {StorageSlot} from "@openzeppelin/contracts/utils/StorageSlot.sol";
-import {ERC7656ServiceExt, IERC7656ServiceExt} from "../../extensions/ERC7656ServiceExt.sol";
+import {IERC7656ServiceExt} from "../../extensions/ERC7656ServiceExt.sol";
 import {Guardian} from "../Guardian.sol";
 import {BadgeCollectorService} from "./BadgeCollectorService.sol";
 

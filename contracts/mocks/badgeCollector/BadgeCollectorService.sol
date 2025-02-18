@@ -19,7 +19,7 @@ abstract contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, C
   }
 
   function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {
-    return (interfaceId == type(ERC7656ServiceExt).interfaceId ||
+    return (interfaceId == type(IERC7656ServiceExt).interfaceId ||
       interfaceId == type(IERC721Receiver).interfaceId ||
       interfaceId == type(IERC165).interfaceId);
   }
