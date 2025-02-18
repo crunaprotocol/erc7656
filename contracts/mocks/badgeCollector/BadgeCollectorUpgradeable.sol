@@ -10,7 +10,6 @@ import {BadgeCollectorService} from "./BadgeCollectorService.sol";
 
 contract BadgeCollectorUpgradeable is BadgeCollectorService {
   Guardian public guardian;
-  address private constant _GUARDIAN_SETTER = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
 
   /**
    * @notice Storage slot with the address of the current implementation.
@@ -26,10 +25,8 @@ contract BadgeCollectorUpgradeable is BadgeCollectorService {
   error PluginRequiresNewerManager(uint256 requiredVersion);
   error ZeroAddress();
 
-  function setGuardian(address guardian_) external {
-    if (_msgSender() != _GUARDIAN_SETTER) revert NotTheGuardianSetter();
+  constructor(address guardian_) {
     if (guardian_ == address(0)) revert ZeroAddress();
-    if (address(guardian) != address(0)) revert GuardianAlreadySet();
     guardian = Guardian(guardian_);
   }
 
