@@ -28,7 +28,7 @@ contract BadgeCollectorServiceUpgradeable is BadgeCollectorService {
     if (owner() != _msgSender()) revert NotTheTokenOwner();
     if (implementation_ == address(0)) revert ZeroAddress();
     // hardcoded because deployed, in this example, via Nick's factory
-    Guardian guardian = Guardian(0xDC6803bE2AEdEf0383E25AB1f81959B048E614A4);
+    Guardian guardian = Guardian(0x7F26e4102B43c247252dD3bE6ABeD4E096d95b95);
     bool trusted = guardian.trusted(implementation_);
     if (!trusted) revert NotTrustedImplementation();
     IERC7656ServiceExt impl = IERC7656ServiceExt(implementation_);

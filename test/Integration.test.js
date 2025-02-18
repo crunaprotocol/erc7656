@@ -50,7 +50,7 @@ describe("Integration test", async function () {
         salt0,
     );
 
-    expect(await guardian.getAddress()).equal("0xDC6803bE2AEdEf0383E25AB1f81959B048E614A4");
+    expect(await guardian.getAddress()).equal("0x7F26e4102B43c247252dD3bE6ABeD4E096d95b95");
 
     service = await deployUtils.deploy("BadgeCollectorService");
     upgradeableService = await deployUtils.deploy("BadgeCollectorServiceUpgradeable");

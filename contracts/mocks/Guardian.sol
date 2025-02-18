@@ -9,16 +9,18 @@ contract Guardian {
   mapping(address => bool) private _trusted;
 
   event Trusted(address indexed implementation);
+  error NotAuthorized();
+  error AlreadyInitialized();
 
   // Remove the constructor and replace it with an initialize function
   function initialize(address owner_) public {
     if (owner == address(0)) {
       owner = owner_;
-    } else revert("Already initialized");
+    } else revert AlreadyInitialized();
   }
 
   function trust(address implementation) external {
-    if (msg.sender != owner) revert("Not authorized");
+    if (msg.sender != owner) revert NotAuthorized();
     _trusted[implementation] = true;
     emit Trusted(implementation);
   }
