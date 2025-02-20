@@ -14,7 +14,7 @@ contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, Context {
   error NotTheTokenOwner();
 
   modifier onlyTokenOwner() {
-    if (owner() != _msgSender()) revert NotTheTokenOwner();
+    if (_owner() != _msgSender()) revert NotTheTokenOwner();
     _;
   }
 
@@ -32,6 +32,6 @@ contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, Context {
 
   function transferBadgeToOwner(address badgeAddress, uint256 badgeTokenId) external virtual onlyTokenOwner {
     // it will revert if the token is a soul-bound token or any locked token
-    IERC721(badgeAddress).transferFrom(address(this), owner(), badgeTokenId);
+    IERC721(badgeAddress).transferFrom(address(this), _owner(), badgeTokenId);
   }
 }
