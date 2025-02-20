@@ -18,36 +18,40 @@ abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt, EIP53
   /**
    * @notice Returns the owner of the token
    */
-  function owner() public view virtual override returns (address) {
+  function owner() external view virtual override returns (address) {
     return _owner();
   }
 
   /**
    * @notice Returns the salt used when creating the contract
    */
-  function salt() public view virtual override returns (bytes32) {
-    return SimplifiedERC6551AccountLib.salt();
+  function salt() external view virtual override returns (bytes32) {
+    return _salt();
   }
 
   /**
    * @notice Returns the address of the token contract
    */
-  function tokenAddress() public view virtual override returns (address) {
+  function tokenAddress() external view virtual override returns (address) {
     return _tokenAddress();
   }
 
   /**
    * @notice Returns the tokenId of the token
    */
-  function tokenId() public view virtual override returns (uint256) {
+  function tokenId() external view virtual override returns (uint256) {
     return _tokenId();
   }
 
   /**
    * @notice Returns the implementation used when creating the contract
    */
-  function implementation() public view virtual override returns (address) {
+  function implementation() external view virtual override returns (address) {
     return _implementation();
+  }
+
+  function context() external view returns (bytes32, uint256, address, uint256) {
+    return _context();
   }
 
   /**
@@ -58,6 +62,10 @@ abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt, EIP53
     (uint256 chainId, address tokenContract_, uint256 tokenId_) = SimplifiedERC6551AccountLib.token();
     if (chainId != block.chainid) return address(0);
     return IERC721(tokenContract_).ownerOf(tokenId_);
+  }
+
+  function _salt() internal view virtual returns (bytes32) {
+    return SimplifiedERC6551AccountLib.salt();
   }
 
   function _tokenAddress() internal view returns (address) {
@@ -74,12 +82,8 @@ abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt, EIP53
     return SimplifiedERC6551AccountLib.implementation();
   }
 
-  function version() external pure virtual returns (uint256) {
-    return _version();
-  }
-
-  function _version() internal pure virtual returns (uint256) {
-    return 1_000_000;
+  function _context() internal view returns (bytes32, uint256, address, uint256) {
+    return SimplifiedERC6551AccountLib.context();
   }
 
   // @dev This empty reserved space is put in place to allow future versions

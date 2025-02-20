@@ -95,7 +95,11 @@ describe("Integration test", async function () {
     expect(await badgeCollector.tokenId()).equal(id);
     expect(await badgeCollector.implementation()).equal(await badgeCollectorImpl.getAddress());
 
-    expect(await badgeCollector.version()).equal(1000000);
+    const context = await badgeCollector.context();
+    expect(context[0]).equal(salt0);
+    expect(context[1]).equal(chainId);
+    expect(context[2]).equal(await nft.getAddress());
+    expect(context[3]).equal(id);
   });
 
   it("should use and verify the service", async function () {

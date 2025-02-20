@@ -48,4 +48,19 @@ library SimplifiedERC6551AccountLib {
   function salt() internal view returns (bytes32) {
     return salt(address(this));
   }
+
+  function context(address account) internal view returns (bytes32, uint256, address, uint256) {
+    bytes memory encodedData = new bytes(0x80);
+    // solhint-disable-next-line no-inline-assembly
+    assembly {
+      // copy full context (0x80 bytes)
+      extcodecopy(account, add(encodedData, 0x20), 0x2D, 0x80)
+    }
+
+    return abi.decode(encodedData, (bytes32, uint256, address, uint256));
+  }
+
+  function context() internal view returns (bytes32, uint256, address, uint256) {
+    return context(address(this));
+  }
 }

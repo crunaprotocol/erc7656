@@ -28,10 +28,7 @@ interface IERC7656ServiceExt is IERC7656Service {
   function implementation() external view returns (address);
 
   /**
-   * @notice Returns the version of the contract.
-   * The format is similar to semver, where any element takes 3 digits.
-   * For example, version 1.2.14 is 1_002_014.
-   * For simplicity, it does not include extra words like alpha, rc, etc. That can be set as a separate function, if needed.
+   * @notice Returns the entire context
    */
-  function version() external pure returns (uint256);
+  function context() external view returns (bytes32, uint256, address, uint256);
 }
