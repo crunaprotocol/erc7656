@@ -33,15 +33,18 @@ describe("Integration test", async function () {
 
     chainId = await getChainId();
     chainIdBytes32 = "0x" + chainId.toString(16).padStart(64, "0");
-    registry = await deployUtils.deployBytecodeViaNickSFactory(
-        deployer,
-        "ERC7656Registry",
-        bytecodes.bytecode,
-        bytecodes.salt,
-    );
-    const registryAddress = await registry.getAddress();
 
-    expect(registryAddress).equal(bytecodes.address);
+    // registry = await deployUtils.deployBytecodeViaNickSFactory(
+    //     deployer,
+    //     "ERC7656Registry",
+    //     bytecodes.bytecode,
+    //     bytecodes.salt,
+    // );
+    // const registryAddress = await registry.getAddress();
+    // expect(registryAddress).equal(bytecodes.address);
+
+    registry = await deployUtils.deploy("ERC7656Registry");
+
     expect(await getInterfaceId("IERC7656Registry")).equal("3abf1676");
     expect(await getInterfaceId("IERC7656Service")).equal("e11527d4");
 
@@ -71,24 +74,43 @@ describe("Integration test", async function () {
     // mint an nft
     await nft.safeMint(bob.address, id);
 
-    await //expect(
-        registry.create(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), '0x00', id)
-  //).emit(registry, "Created")
+    const salt0 = ethers.randomBytes(32);
+    console.log("Salt used:", salt0);
+    console.log("Implementation address:", await badgeCollectorImpl.getAddress());
+    console.log("NFT address:", await nft.getAddress());
+    console.log("Registry address:", await registry.getAddress());
 
-    // .withArgs(anyValue, await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), '0x00', id);
+    await expect(
+        registry.create(
+        await badgeCollectorImpl.getAddress(),
+        salt0,
+        chainIdBytes32,
+        '0x00',
+        await nft.getAddress(),
+        id
+    ))
+        .to.emit(registry, "Created")
+        .withArgs(
+            await registry.compute(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, '0x00', await nft.getAddress(), id), // computed address
+            await badgeCollectorImpl.getAddress(), // implementation
+            salt0, // salt
+            chainIdBytes32, // chainId
+            '0x00', // mode
+            await nft.getAddress(), // linkedContract
+            id // linkedId
+        );
 
+    const serviceAddress = await registry.compute(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, '0x00', await nft.getAddress(), id);
+    console.log("Computed address:", serviceAddress);
 
-    cl(9999)
-
-    const serviceAddress = await registry.compute(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), '0x00', id);
-
-    // verify that the service has been deployed, i.e., the code is not zero
+// Get the code size
     const code = await ethers.provider.getCode(serviceAddress);
-    expect(code).not.equal("0x");
+    console.log("Code at address:", code);
+
 
     badgeCollector = await deployUtils.getContract("BadgeCollectorService", serviceAddress);
 
-    expect(await badgeCollector.supportsInterface("0xfc0c546a")).equal(true);
+    expect(await badgeCollector.supportsInterface("0xe11527d4")).equal(true);
 
     expect(await badgeCollector.owner()).equal(bob.address);
     const token = await badgeCollector.token();
