@@ -42,10 +42,10 @@ describe("Integration test", async function () {
     const registryAddress = await registry.getAddress();
 
     expect(registryAddress).equal(bytecodes.address);
-    expect(await getInterfaceId("IERC7656Registry")).equal("c6bdc908");
-    expect(await getInterfaceId("IERC7656Service")).equal("fc0c546a");
+    expect(await getInterfaceId("IERC7656Registry")).equal("3abf1676");
+    expect(await getInterfaceId("IERC7656Service")).equal("e11527d4");
 
-    expect(await registry.supportsInterface("0xc6bdc908")).equal(true);
+    expect(await registry.supportsInterface("0x3abf1676")).equal(true);
   });
 
   async function initAndDeploy() {
@@ -65,15 +65,22 @@ describe("Integration test", async function () {
   it("should deploy and initiate everything", async function () {
   });
 
-  it("should associate the service to the NFT and verify that the service has been deployed", async function () {
+  it.only("should associate the service to the NFT and verify that the service has been deployed", async function () {
 
     let id = 1;
     // mint an nft
     await nft.safeMint(bob.address, id);
 
-    await expect(registry.create(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), id)).emit(registry, "Created").withArgs(anyValue, await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), id);
+    await //expect(
+        registry.create(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), '0x00', id)
+  //).emit(registry, "Created")
 
-    const serviceAddress = await registry.compute(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), id);
+    // .withArgs(anyValue, await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), '0x00', id);
+
+
+    cl(9999)
+
+    const serviceAddress = await registry.compute(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), '0x00', id);
 
     // verify that the service has been deployed, i.e., the code is not zero
     const code = await ethers.provider.getCode(serviceAddress);

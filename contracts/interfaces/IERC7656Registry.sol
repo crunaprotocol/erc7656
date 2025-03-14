@@ -15,17 +15,19 @@ interface IERC7656Registry {
    * @param contractAddress The address of the created contract
    * @param implementation The address of the implementation contract
    * @param salt The salt to use for the create2 operation
-   * @param chainId The chain id of the chain where the contract is being created
-   * @param tokenContract The address of the token contract
-   * @param tokenId The id of the token
+   * @param chainId The chain linkedId of the chain where the contract is being created
+   * @param mode If 0x01, the linkedId is not used, saving 32 bytes in the bytecode
+   * @param linkedContract The address of the token or contract
+   * @param linkedId The optional ID (e.g., linkedId) of the linked contract, or 0 if not applicable
    */
   event Created(
     address contractAddress,
     address indexed implementation,
     bytes32 salt,
     uint256 chainId,
-    address indexed tokenContract,
-    uint256 indexed tokenId
+    bytes1 mode,
+    address indexed linkedContract,
+    uint256 indexed linkedId
   );
 
   /**
@@ -34,38 +36,42 @@ interface IERC7656Registry {
   error CreationFailed();
 
   /**
-   * @notice Creates a token linked service for a non-fungible token.
-   * If service has already been created, returns the service address without calling create2.
+   * @notice Creates a token or contract-linked service.
+   * If the service has already been created, returns the service address without calling create2.
    * @param implementation The address of the implementation contract
    * @param salt The salt to use for the create2 operation
-   * @param chainId The chain id of the chain where the service is being created
-   * @param tokenContract The address of the token contract
-   * @param tokenId The id of the token
+   * @param chainId The chain linkedId of the chain where the service is being created
+   * @param mode If true, the linkedId is not used, saving 32 bytes in the bytecode
+   * @param linkedContract The address of the token or contract
+   * @param linkedId The optional ID (e.g., linkedId) of the linked contract. If mode is true, this value is ignored
    * Emits Created event.
-   * @return service The address of the token linked service
+   * @return service The address of the token or contract-linked service
    */
   function create(
     address implementation,
     bytes32 salt,
     uint256 chainId,
-    address tokenContract,
-    uint256 tokenId
-  ) external returns (address service);
+    bytes1 mode,
+    address linkedContract,
+    uint256 linkedId
+  ) external returns (address);
 
   /**
-   * @notice Returns the computed token linked service address for a non-fungible token.
+   * @notice Returns the computed token or contract-linked service address.
    * @param implementation The address of the implementation contract
    * @param salt The salt to use for the create2 operation
-   * @param chainId The chain id of the chain where the service is being created
-   * @param tokenContract The address of the token contract
-   * @param tokenId The id of the token
-   * @return service The address of the token linked service
+   * @param chainId The chain linkedId of the chain where the service is being created
+   * @param mode Needed to get the correct deployed bytecode, needed to compute the address
+   * @param linkedContract The address of the token or contract
+   * @param linkedId The optional ID (e.g., linkedId) of the linked contract. If mode is true, this value is ignored
+   * @return service The address of the token or contract-linked service
    */
   function compute(
     address implementation,
     bytes32 salt,
     uint256 chainId,
-    address tokenContract,
-    uint256 tokenId
+    bytes1 mode,
+    address linkedContract,
+    uint256 linkedId
   ) external view returns (address service);
 }

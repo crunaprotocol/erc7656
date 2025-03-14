@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// Taken from https://github.com/erc6551/reference/tree/main/src/lib
-// to avoid future possible incompatibilities
-// Simplified to remove unnecessary functions
+// Modified from https://github.com/erc6551/reference/tree/main/src/lib
 
-library SimplifiedERC6551AccountLib {
-  function implementation(address account) internal view returns (address _implementation) {
+library ERC6551AccountLib {
+  function implementation(address service) internal view returns (address _implementation) {
     // solhint-disable-next-line no-inline-assembly
     assembly {
       // copy proxy implementation (0x14 bytes)
-      extcodecopy(account, 0xC, 0xA, 0x14)
+      extcodecopy(service, 0xC, 0xA, 0x14)
       _implementation := mload(0x00)
     }
   }
@@ -19,27 +17,29 @@ library SimplifiedERC6551AccountLib {
     return implementation(address(this));
   }
 
-  function token(address account) internal view returns (uint256, address, uint256) {
+  function linkedContract(address service) internal view returns (uint256, address, uint256) {
     bytes memory encodedData = new bytes(0x60);
     // solhint-disable-next-line no-inline-assembly
     assembly {
       // copy 0x60 bytes from end of context
-      extcodecopy(account, add(encodedData, 0x20), 0x4d, 0x60)
+      extcodecopy(service, add(encodedData, 0x20), 0x4d, 0x60)
     }
 
+    // if mode is 0x01, the id is not part of the bytecode
+    // and this function will return 0 for the id
     return abi.decode(encodedData, (uint256, address, uint256));
   }
 
-  function token() internal view returns (uint256, address, uint256) {
-    return token(address(this));
+  function linkedContract() internal view returns (uint256, address, uint256) {
+    return linkedContract(address(this));
   }
 
-  function salt(address account) internal view returns (bytes32) {
+  function salt(address service) internal view returns (bytes32) {
     bytes memory encodedData = new bytes(0x20);
     // solhint-disable-next-line no-inline-assembly
     assembly {
       // copy 0x20 bytes from beginning of context
-      extcodecopy(account, add(encodedData, 0x20), 0x2d, 0x20)
+      extcodecopy(service, add(encodedData, 0x20), 0x2d, 0x20)
     }
 
     return abi.decode(encodedData, (bytes32));
@@ -49,12 +49,12 @@ library SimplifiedERC6551AccountLib {
     return salt(address(this));
   }
 
-  function context(address account) internal view returns (bytes32, uint256, address, uint256) {
+  function context(address service) internal view returns (bytes32, uint256, address, uint256) {
     bytes memory encodedData = new bytes(0x80);
     // solhint-disable-next-line no-inline-assembly
     assembly {
       // copy full context (0x80 bytes)
-      extcodecopy(account, add(encodedData, 0x20), 0x2D, 0x80)
+      extcodecopy(service, add(encodedData, 0x20), 0x2D, 0x80)
     }
 
     return abi.decode(encodedData, (bytes32, uint256, address, uint256));

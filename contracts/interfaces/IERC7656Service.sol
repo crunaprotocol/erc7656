@@ -10,7 +10,7 @@ interface IERC7656Service {
    * @notice Returns the token linked to the contract
    * @return chainId The chainId of the token
    * @return tokenContract The address of the token contract
-   * @return tokenId The tokenId of the token
+   * @return linkedId The linkedId of the token
    */
-  function token() external view returns (uint256 chainId, address tokenContract, uint256 tokenId);
+  function linkedContract() external view returns (uint256 chainId, address tokenContract, uint256 linkedId);
 }

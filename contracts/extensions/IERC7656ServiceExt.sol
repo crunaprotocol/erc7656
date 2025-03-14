@@ -10,12 +10,12 @@ interface IERC7656ServiceExt is IERC7656Service {
   /**
    * @notice Returns the address of the token contract
    */
-  function tokenAddress() external view returns (address);
+  function linkedContractAddress() external view returns (address);
 
   /**
-   * @notice Returns the tokenId of the token
+   * @notice Returns the linkedId of the token
    */
-  function tokenId() external view returns (uint256);
+  function linkedId() external view returns (uint256);
 
   /**
    * @notice Returns the salt used when creating the contract
