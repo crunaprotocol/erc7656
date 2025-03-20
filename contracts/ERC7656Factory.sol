@@ -2,10 +2,10 @@
 pragma solidity ^0.8.20;
 
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import {IERC7656Registry} from "./interfaces/IERC7656Registry.sol";
+import {IERC7656Factory} from "./interfaces/IERC7656Factory.sol";
 import {ERC7656BytecodeLib} from "./lib/ERC7656BytecodeLib.sol";
 
-contract ERC7656Registry is IERC165, IERC7656Registry {
+contract ERC7656Factory is IERC165, IERC7656Factory {
   /**
    * @dev Creates a proxy contract using the provided parameters
    * If the proxy already exists, returns its address without attempting creation
@@ -60,8 +60,8 @@ contract ERC7656Registry is IERC165, IERC7656Registry {
     return ERC7656BytecodeLib.computeAddress(salt, keccak256(bytecode), address(this));
   }
 
-  /// @dev Returns true if interfaceId is IERC7656Registry's interfaceId
+  /// @dev Returns true if interfaceId is IERC7656Factory.sol's interfaceId
   function supportsInterface(bytes4 interfaceId) external pure override returns (bool) {
-    return interfaceId == type(IERC7656Registry).interfaceId || interfaceId == type(IERC165).interfaceId;
+    return interfaceId == type(IERC7656Factory).interfaceId || interfaceId == type(IERC165).interfaceId;
   }
 }

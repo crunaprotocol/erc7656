@@ -24,7 +24,7 @@ async function main() {
   let salt = bytecodes.salt || ethers.constants.HashZero;
   bytecodes.salt = salt;
 
-  bytecodes.bytecode = await deployUtils.getBytecodeToBeDeployedViaNickSFactory("ERC7656Registry");
+  bytecodes.bytecode = await deployUtils.getBytecodeToBeDeployedViaNickSFactory("ERC7656Service.sol");
 
   bytecodes.address = await deployUtils.getAddressOfContractDeployedWithBytecodeViaNickSFactory(
     bytecodes.bytecode,

@@ -45,16 +45,16 @@ describe("Integration test", async function () {
 
     // registry = await deployUtils.deployBytecodeViaNickSFactory(
     //     deployer,
-    //     "ERC7656Registry",
+    //     "ERC7656Service.sol",
     //     bytecodes.bytecode,
     //     bytecodes.salt,
     // );
     // const registryAddress = await registry.getAddress();
     // expect(registryAddress).equal(bytecodes.address);
 
-    registry = await deployUtils.deploy("ERC7656RegistryExt");
+    registry = await deployUtils.deploy("ERC7656FactoryExt");
 
-    expect(await getInterfaceId("IERC7656Registry")).equal("9e23230a");
+    expect(await getInterfaceId("IERC7656Factory")).equal("9e23230a");
     expect(await getInterfaceId("IERC7656Service")).equal("7e110a1d");
     expect(await getInterfaceId("IERC165")).equal("01ffc9a7");
 

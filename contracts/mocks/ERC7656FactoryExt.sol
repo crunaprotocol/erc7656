@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {ERC7656BytecodeLib, ERC7656Registry} from "../ERC7656Registry.sol";
+import {ERC7656BytecodeLib, ERC7656Factory} from "../ERC7656Factory.sol";
 
-contract ERC7656RegistryExt is ERC7656Registry {
+contract ERC7656FactoryExt is ERC7656Factory {
   function getBytecode(
     address implementation,
     bytes32 salt,

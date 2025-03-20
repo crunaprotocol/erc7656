@@ -23,7 +23,7 @@ async function main() {
   console.log(
     "The code for registry has changed:",
     bytecodes.bytecode !==
-      (await deployUtils.getBytecodeToBeDeployedViaNickSFactory("ERC7656Registry")),
+      (await deployUtils.getBytecodeToBeDeployedViaNickSFactory("ERC7656Service.sol")),
   );
 }
 

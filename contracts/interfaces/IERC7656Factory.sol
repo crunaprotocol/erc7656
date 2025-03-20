@@ -9,7 +9,7 @@ pragma solidity ^0.8.20;
  * The ERC165 interfaceId is 0xc6bdc908
  * @notice Manages the creation of token linked services
  */
-interface IERC7656Registry {
+interface IERC7656Factory {
   /**
    * @notice The registry MUST emit the Created event upon successful contract creation.
    * @param contractAddress The address of the created contract

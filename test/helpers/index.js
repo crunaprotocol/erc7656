@@ -112,7 +112,7 @@ const Helpers = {
     await deployUtils.deployNickSFactory(deployer);
     return deployUtils.deployBytecodeViaNickSFactory(
         deployer,
-        "ERC7656Registry",
+        "ERC7656Service.sol",
         erc7656Bytecode.bytecode,
         erc7656Bytecode.salt,
     );

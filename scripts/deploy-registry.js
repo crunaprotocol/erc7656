@@ -30,7 +30,7 @@ async function main() {
 
   await deployUtils.deployBytecodeViaNickSFactory(
     deployer,
-    "ERC7656Registry",
+    "ERC7656Service.sol",
     bytecodes.bytecode,
     bytecodes.salt,
   );
