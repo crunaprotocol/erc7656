@@ -3,7 +3,7 @@ const {ethers} = require("hardhat");
 const EthDeployUtils = require("eth-deploy-utils");
 const deployUtils = new EthDeployUtils();
 const bytecodes = require("../contracts/bytecode.json");
-const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
+const {anyValue} = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 
 const {
   cl,
@@ -19,13 +19,22 @@ const {
 } = require("./helpers");
 
 describe("Integration test", async function () {
+
   let registry;
   let deployer, bob, alice, fred, mark;
   let chainId, chainIdBytes32;
   let badgeCollectorImpl, nft;
   let magicBadge, collBadge, superTransferableBadge;
   let badgeCollector;
-  const salt0 = "0x" + "0".repeat(64);
+  const salt = "0x" + "aabbccdd".repeat(8);
+
+  let linkedId = Number(1).toString(16).padStart(64, "0");
+  let erc1167Header = "0x3d60ad80600a3d3981f3363d3d373d3d3d363d73";
+  let erc1167Footer = "0x5af43d82803e903d91602b57fd5bf3"
+  let contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+  let implAddress = "0x0B306BF915C4d645ff596e518fAf3F9669b97016";
+  let mode1 = "0x000000000000000000000001";
+  let mode0 = "0x000000000000000000000000";
 
   before(async function () {
     [deployer, bob, alice, fred, mark] = await ethers.getSigners();
@@ -43,12 +52,14 @@ describe("Integration test", async function () {
     // const registryAddress = await registry.getAddress();
     // expect(registryAddress).equal(bytecodes.address);
 
-    registry = await deployUtils.deploy("ERC7656Registry");
+    registry = await deployUtils.deploy("ERC7656RegistryExt");
 
-    expect(await getInterfaceId("IERC7656Registry")).equal("3abf1676");
-    expect(await getInterfaceId("IERC7656Service")).equal("e11527d4");
+    expect(await getInterfaceId("IERC7656Registry")).equal("9e23230a");
+    expect(await getInterfaceId("IERC7656Service")).equal("7e110a1d");
+    expect(await getInterfaceId("IERC165")).equal("01ffc9a7");
 
-    expect(await registry.supportsInterface("0x3abf1676")).equal(true);
+    expect(await registry.supportsInterface("0x9e23230a")).equal(true);
+    expect(await registry.supportsInterface("0x01ffc9a7")).equal(true);
   });
 
   async function initAndDeploy() {
@@ -68,95 +79,239 @@ describe("Integration test", async function () {
   it("should deploy and initiate everything", async function () {
   });
 
-  it.only("should associate the service to the NFT and verify that the service has been deployed", async function () {
+  it("should get the expected creation code", async function () {
 
-    let id = 1;
-    // mint an nft
-    await nft.safeMint(bob.address, id);
-
-    const salt0 = ethers.randomBytes(32);
-    console.log("Salt used:", salt0);
-    console.log("Implementation address:", await badgeCollectorImpl.getAddress());
-    console.log("NFT address:", await nft.getAddress());
-    console.log("Registry address:", await registry.getAddress());
-
-    await expect(
-        registry.create(
-        await badgeCollectorImpl.getAddress(),
-        salt0,
+    let bytecode = await registry.getBytecode(
+        implAddress,
+        salt,
         chainIdBytes32,
-        '0x00',
-        await nft.getAddress(),
-        id
-    ))
-        .to.emit(registry, "Created")
-        .withArgs(
-            await registry.compute(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, '0x00', await nft.getAddress(), id), // computed address
-            await badgeCollectorImpl.getAddress(), // implementation
-            salt0, // salt
-            chainIdBytes32, // chainId
-            '0x00', // mode
-            await nft.getAddress(), // linkedContract
-            id // linkedId
-        );
+        mode1, // mode
+        contractAddress,
+        '0x00' // it is ignored
+    );
+    expect(bytecode).equal(
+        (erc1167Header +
+        de0x(implAddress) +
+        de0x(erc1167Footer) +
+        de0x(salt) +
+        de0x(chainIdBytes32) +
+        de0x(mode1) +
+        de0x(contractAddress) +
+        "00".repeat(32)
+        ).toLowerCase());
 
-    const serviceAddress = await registry.compute(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, '0x00', await nft.getAddress(), id);
-    console.log("Computed address:", serviceAddress);
+    bytecode = await registry.getBytecode(
+        implAddress,
+        salt,
+        chainIdBytes32,
+        mode0, // mode
+        contractAddress,
+        '0x1234' // it is ignored
+    );
+    expect(bytecode).equal(
+        (erc1167Header +
+            de0x(implAddress) +
+            de0x(erc1167Footer) +
+            de0x(salt) +
+            de0x(chainIdBytes32) +
+            de0x(mode0) +
+            de0x(contractAddress) +
+        "00".repeat(30) + "1234"
+    ).toLowerCase());
 
-// Get the code size
-    const code = await ethers.provider.getCode(serviceAddress);
-    console.log("Code at address:", code);
+  });
+
+  it("should associate the service to the NFT and verify that the service has been deployed", async function () {
+
+    // Compute the address first
+    let expectedServiceAddress = await registry.compute(
+        implAddress,
+        salt,
+        chainIdBytes32,
+        mode0,
+        contractAddress,
+        linkedId
+    );
+
+    try {
+      // Create the service using the same ID
+      const tx = await registry.create(
+          implAddress,
+          salt,
+          chainIdBytes32,
+          mode0,
+          contractAddress,
+          linkedId,  // Use the same ID here
+          { gasLimit: 500000 }
+      );
+      const receipt = await tx.wait();
+      // console.log("Transaction receipt logs:", receipt.logs);
+    } catch (error) {
+      console.error("Error details:", error);
+      throw error;  // Re-throw to fail the test
+    }
+
+    // Verify the address has code
+    let serviceAddress = expectedServiceAddress;
+    let code = await ethers.provider.getCode(serviceAddress);
+    // console.log("Code at address:", code);
+    expect(code).equal("0x363d3d373d3d3d363d730b306bf915c4d645ff596e518faf3f9669b970165af43d82803e903d91602b57fd5bf3aabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccdd0000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000000000000000000000000000000000000000000001");
+
+    // test the case the contract has been already deployed
+
+    await registry.create(
+        implAddress,
+        salt,
+        chainIdBytes32,
+        mode0,
+        contractAddress,
+        linkedId,  // Use the same ID here
+        { gasLimit: 500000 }
+    );
+  });
+
+  function de0x(value) {
+    return value.replace(/^0x/, "");
+  }
+
+  it("should associate the service to a smart account and verify that the service has been deployed", async function () {
+
+    // Compute the address first
+    let expectedServiceAddress = await registry.compute(
+        implAddress,
+        salt,
+        chainIdBytes32,
+        mode1,
+        contractAddress,
+        0
+    );
+
+    try {
+      // Create the service using the same ID
+      const tx = await registry.create(
+          implAddress,
+          salt,
+          chainIdBytes32,
+          mode1,
+          contractAddress,
+          0,  // Use the same ID here
+          { gasLimit: 500000 }
+      );
+      const receipt = await tx.wait();
+      // console.log("Transaction receipt logs:", receipt.logs);
+    } catch (error) {
+      console.error("Error details:", error);
+      throw error;  // Re-throw to fail the test
+    }
+
+    // Verify the address has code
+    let serviceAddress = expectedServiceAddress;
+    let code = await ethers.provider.getCode(serviceAddress);
+    // console.log("Code at address:", code);
+    expect(code).equal("0x363d3d373d3d3d363d730b306bf915c4d645ff596e518faf3f9669b970165af43d82803e903d91602b57fd5bf3aabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccdd0000000000000000000000000000000000000000000000000000000000007a69000000000000000000000001e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000000000000000000000000000000000000000000000");
+  });
 
 
-    badgeCollector = await deployUtils.getContract("BadgeCollectorService", serviceAddress);
+    it("should associate the service to the NFT and verify that the service has been deployed and works", async function () {
 
-    expect(await badgeCollector.supportsInterface("0xe11527d4")).equal(true);
+    let linkedId = 1;
+    // mint an nft
+    await nft.safeMint(bob.address, linkedId);
+
+      let expectedServiceAddress = await registry.compute(
+          await badgeCollectorImpl.getAddress(),
+          salt,
+          chainIdBytes32,
+          mode0,
+          await nft.getAddress(),
+          linkedId
+      );
+
+      await expect(registry.create(
+            await badgeCollectorImpl.getAddress(),
+            salt,
+            chainIdBytes32,
+            mode0,
+            await nft.getAddress(),
+            linkedId,  // Use the same ID here
+            { gasLimit: 500000 }
+        )).emit(registry, "Created")
+          .withArgs(
+              expectedServiceAddress,
+              await badgeCollectorImpl.getAddress(),
+              salt,
+              chainIdBytes32,
+              mode0,
+              await nft.getAddress(),
+              linkedId
+          );
+
+    badgeCollector = await deployUtils.getContract("BadgeCollectorService", expectedServiceAddress);
+
+    expect(await badgeCollector.supportsInterface("0x7e110a1d")).equal(true);
 
     expect(await badgeCollector.owner()).equal(bob.address);
-    const token = await badgeCollector.token();
+    const linkedData = await badgeCollector.linkedData();
 
-    expect(token[0]).equal(chainId);
-    expect(token[1]).equal(await nft.getAddress());
-    expect(token[2]).equal(id);
+    expect(linkedData[0]).equal(chainId);
+    expect(linkedData[1]).equal(mode0);
+    expect(linkedData[2]).equal(await nft.getAddress());
+    expect(linkedData[3]).equal(linkedId);
 
-    expect(await badgeCollector.salt()).equal(salt0);
-    expect(await badgeCollector.tokenAddress()).equal(await nft.getAddress());
-    expect(await badgeCollector.tokenId()).equal(id);
+    expect(await badgeCollector.salt()).equal(salt);
+    expect(await badgeCollector.chainId()).equal(chainId);
+    expect(await badgeCollector.mode()).equal(mode0);
+    expect(await badgeCollector.linkedContract()).equal(await nft.getAddress());
+    expect(await badgeCollector.linkedId()).equal(linkedId);
     expect(await badgeCollector.implementation()).equal(await badgeCollectorImpl.getAddress());
-
-    const context = await badgeCollector.context();
-    expect(context[0]).equal(salt0);
-    expect(context[1]).equal(chainId);
-    expect(context[2]).equal(await nft.getAddress());
-    expect(context[3]).equal(id);
   });
 
   it("should use and verify the service", async function () {
 
-    let id = 1;
+    let linkedId = 1;
     // mint an nft
-    await nft.safeMint(bob.address, id);
+    await nft.safeMint(bob.address, linkedId);
 
-    await registry.create(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), id);
-    const serviceAddress = await registry.compute(await badgeCollectorImpl.getAddress(), salt0, chainIdBytes32, await nft.getAddress(), id);
+    let expectedServiceAddress = await registry.compute(
+        await badgeCollectorImpl.getAddress(),
+        salt,
+        chainIdBytes32,
+        mode0,
+        await nft.getAddress(),
+        linkedId
+    );
 
-    badgeCollector = await deployUtils.getContract("BadgeCollectorService", serviceAddress);
+    await registry.create(
+        await badgeCollectorImpl.getAddress(),
+        salt,
+        chainIdBytes32,
+        mode0,
+        await nft.getAddress(),
+        linkedId,  // Use the same ID here
+        { gasLimit: 500000 }
+    );
 
-    await expect(collBadge.safeMint(serviceAddress, id)).emit(collBadge, "Transfer").withArgs(addr0, serviceAddress, id);
+    badgeCollector = await deployUtils.getContract("BadgeCollectorService", expectedServiceAddress);
 
-    await expect(magicBadge.safeMint(serviceAddress, id)).emit(magicBadge, "Transfer").withArgs(addr0, serviceAddress, id);
+    expect(await badgeCollector.owner()).equal(bob.address);
 
-    await expect(superTransferableBadge.safeMint(serviceAddress, id))
+    badgeCollector = await deployUtils.getContract("BadgeCollectorService", expectedServiceAddress);
+
+    await expect(collBadge.safeMint(expectedServiceAddress, linkedId)).emit(collBadge, "Transfer").withArgs(addr0, expectedServiceAddress, linkedId);
+
+    await expect(magicBadge.safeMint(expectedServiceAddress, linkedId)).emit(magicBadge, "Transfer").withArgs(addr0, expectedServiceAddress, linkedId);
+
+    await expect(superTransferableBadge.safeMint(expectedServiceAddress, linkedId))
         .emit(superTransferableBadge, "Transfer")
-        .withArgs(addr0, serviceAddress, id);
+        .withArgs(addr0, expectedServiceAddress, linkedId);
 
-    await assertThrowsMessage(badgeCollector.connect(bob).transferBadgeToOwner(await collBadge.getAddress(), id), "NotTransferable");
+    await assertThrowsMessage(badgeCollector.connect(bob).transferBadgeToOwner(await collBadge.getAddress(), linkedId), "NotTransferable");
 
-    await expect(badgeCollector.connect(bob).transferBadgeToOwner(await superTransferableBadge.getAddress(), id))
+    await expect(badgeCollector.connect(bob).transferBadgeToOwner(await superTransferableBadge.getAddress(), linkedId))
         .emit(superTransferableBadge, "Transfer")
-        .withArgs(serviceAddress, bob.address, id);
+        .withArgs(expectedServiceAddress, bob.address, linkedId);
 
-    expect(await superTransferableBadge.firstOwnerOf(id)).equal(serviceAddress);
+    expect(await superTransferableBadge.firstOwnerOf(linkedId)).equal(expectedServiceAddress);
   });
 
 });

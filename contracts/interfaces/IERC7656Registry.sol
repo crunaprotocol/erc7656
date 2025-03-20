@@ -14,18 +14,18 @@ interface IERC7656Registry {
    * @notice The registry MUST emit the Created event upon successful contract creation.
    * @param contractAddress The address of the created contract
    * @param implementation The address of the implementation contract
-   * @param salt The salt to use for the create2 operation
    * @param chainId The chain linkedId of the chain where the contract is being created
-   * @param mode If 0x01, the linkedId is not used, saving 32 bytes in the bytecode
    * @param linkedContract The address of the token or contract
    * @param linkedId The optional ID (e.g., linkedId) of the linked contract, or 0 if not applicable
+   * @param salt The salt is a bytes32 so save 32 bytes in the bytecode. It is converted in the function to a bytes32 to use it for the create2 operation
+   * @param mode If true, the linkedId is not used, saving 32 bytes in the bytecode
    */
   event Created(
     address contractAddress,
     address indexed implementation,
     bytes32 salt,
     uint256 chainId,
-    bytes1 mode,
+    bytes12 mode,
     address indexed linkedContract,
     uint256 indexed linkedId
   );
@@ -39,19 +39,18 @@ interface IERC7656Registry {
    * @notice Creates a token or contract-linked service.
    * If the service has already been created, returns the service address without calling create2.
    * @param implementation The address of the implementation contract
-   * @param salt The salt to use for the create2 operation
    * @param chainId The chain linkedId of the chain where the service is being created
-   * @param mode If true, the linkedId is not used, saving 32 bytes in the bytecode
    * @param linkedContract The address of the token or contract
    * @param linkedId The optional ID (e.g., linkedId) of the linked contract. If mode is true, this value is ignored
-   * Emits Created event.
+   * @param salt The salt is a bytes32 so save 32 bytes in the bytecode. It is converted in the function to a bytes32 to use it for the create2 operation
+   * @param mode If true, the linkedId is not used, saving 32 bytes in the bytecode
    * @return service The address of the token or contract-linked service
    */
   function create(
     address implementation,
     bytes32 salt,
     uint256 chainId,
-    bytes1 mode,
+    bytes12 mode,
     address linkedContract,
     uint256 linkedId
   ) external returns (address);
@@ -61,16 +60,16 @@ interface IERC7656Registry {
    * @param implementation The address of the implementation contract
    * @param salt The salt to use for the create2 operation
    * @param chainId The chain linkedId of the chain where the service is being created
-   * @param mode Needed to get the correct deployed bytecode, needed to compute the address
    * @param linkedContract The address of the token or contract
    * @param linkedId The optional ID (e.g., linkedId) of the linked contract. If mode is true, this value is ignored
+   * @param mode If true, the linkedId is not used, saving 32 bytes in the bytecode
    * @return service The address of the token or contract-linked service
    */
   function compute(
     address implementation,
     bytes32 salt,
     uint256 chainId,
-    bytes1 mode,
+    bytes12 mode,
     address linkedContract,
     uint256 linkedId
   ) external view returns (address service);
