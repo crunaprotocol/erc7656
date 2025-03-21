@@ -6,8 +6,6 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import {Context} from "@openzeppelin/contracts/utils/Context.sol";
 import {ERC7656ServiceExt, IERC7656ServiceExt} from "../extensions/ERC7656ServiceExt.sol";
-import {ERC7656ServiceLib} from "../lib/ERC7656ServiceLib.sol";
-import {ERC7656BytecodeLib} from "../lib/ERC7656BytecodeLib.sol";
 
 contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, Context {
   event BadgeCollected(address indexed badgeAddress, uint256 indexed badgeTokenId, address from, uint256 timestamp);
@@ -42,7 +40,7 @@ contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, Context {
   }
 
   function _owner() internal view returns (address) {
-    (,,address nft, uint256 id) = _linkedData();
+    (, , address nft, uint256 id) = _linkedData();
     return IERC721(nft).ownerOf(id);
   }
 }

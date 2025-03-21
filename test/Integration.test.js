@@ -194,7 +194,7 @@ describe("Integration test", async function () {
           chainIdBytes32,
           mode1,
           contractAddress,
-          0,  // Use the same ID here
+          1234,
           { gasLimit: 500000 }
       );
       const receipt = await tx.wait();

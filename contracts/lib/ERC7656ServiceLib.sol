@@ -56,5 +56,4 @@ library ERC7656ServiceLib {
   function salt() internal view returns (bytes32) {
     return salt(address(this));
   }
-
 }

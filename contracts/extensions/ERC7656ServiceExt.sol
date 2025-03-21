@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: GPL3
 pragma solidity ^0.8.20;
 
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC7656ServiceLib} from "../lib/ERC7656ServiceLib.sol";
 
-import {EIP5313} from "../interfaces/EIP5313.sol";
 import {IERC7656ServiceExt} from "./IERC7656ServiceExt.sol";
 import {ERC7656Service} from "../ERC7656Service.sol";
 
@@ -14,7 +12,7 @@ import {ERC7656Service} from "../ERC7656Service.sol";
  * @title ERC7656ServiceExt.sol.sol.sol
  * @notice Abstract contract to link a contract to an NFT
  */
-abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt, EIP5313 {
+abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt {
   /**
    * @notice Returns the salt used when creating the contract
    */
@@ -59,7 +57,6 @@ abstract contract ERC7656ServiceExt is ERC7656Service, IERC7656ServiceExt, EIP53
     (uint256 chainId_, , , ) = _linkedData();
     return chainId_;
   }
-
 
   function _mode() internal view virtual returns (bytes12) {
     (, bytes12 mode_, , ) = _linkedData();
