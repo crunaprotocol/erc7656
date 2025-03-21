@@ -18,6 +18,10 @@ contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, Context {
     _;
   }
 
+  function owner() external view returns (address) {
+    return _owner();
+  }
+
   function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {
     return
       (interfaceId == type(IERC7656ServiceExt).interfaceId ||
@@ -33,5 +37,10 @@ contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, Context {
   function transferBadgeToOwner(address badgeAddress, uint256 badgeTokenId) external virtual onlyTokenOwner {
     // it will revert if the token is a soul-bound token or any locked token
     IERC721(badgeAddress).transferFrom(address(this), _owner(), badgeTokenId);
+  }
+
+  function _owner() internal view returns (address) {
+    (, , address nft, uint256 id) = _linkedData();
+    return IERC721(nft).ownerOf(id);
   }
 }

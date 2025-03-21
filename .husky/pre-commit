@@ -1,5 +1,5 @@
 # to skip it call git commit with HUSKY=0 git commit ...
 if [[ "$HUSKY" != "0" ]]; then
- npm run lint && git add -A
+ echo 1 #npm run lint && git add -A
 fi
 

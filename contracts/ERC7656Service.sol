@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import {SimplifiedERC6551AccountLib} from "./lib/SimplifiedERC6551AccountLib.sol";
+import {ERC7656ServiceLib} from "./lib/ERC7656ServiceLib.sol";
 
 import {IERC7656Service} from "./interfaces/IERC7656Service.sol";
 
@@ -18,18 +18,18 @@ contract ERC7656Service is IERC7656Service, IERC165 {
   }
 
   /**
-   * @notice Returns the token linked to the contract
+   * @notice Returns the linkedContract linked to the contract
    */
-  function token() public view virtual override returns (uint256, address, uint256) {
-    return _token();
+  function linkedData() public view virtual override returns (uint256, bytes12, address, uint256) {
+    return _linkedData();
   }
 
   /**
    * Private functions
    */
 
-  function _token() internal view returns (uint256, address, uint256) {
-    return SimplifiedERC6551AccountLib.token();
+  function _linkedData() internal view returns (uint256, bytes12, address, uint256) {
+    return ERC7656ServiceLib.linkedData(address(this));
   }
 
   // @dev This empty reserved space is put in place to allow future versions

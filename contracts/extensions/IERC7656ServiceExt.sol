@@ -8,14 +8,24 @@ import {IERC7656Service} from "../interfaces/IERC7656Service.sol";
  */
 interface IERC7656ServiceExt is IERC7656Service {
   /**
-   * @notice Returns the address of the token contract
+   * @notice Returns the chainId where the contract was deployed
    */
-  function tokenAddress() external view returns (address);
+  function chainId() external view returns (uint256);
 
   /**
-   * @notice Returns the tokenId of the token
+   * @notice Returns the mode of the link
    */
-  function tokenId() external view returns (uint256);
+  function mode() external view returns (bytes12);
+
+  /**
+   * @notice Returns the address of the token contract
+   */
+  function linkedContract() external view returns (address);
+
+  /**
+   * @notice Returns the linkedId of the token
+   */
+  function linkedId() external view returns (uint256);
 
   /**
    * @notice Returns the salt used when creating the contract
@@ -26,9 +36,4 @@ interface IERC7656ServiceExt is IERC7656Service {
    * @notice Returns the implementation used when creating the contract
    */
   function implementation() external view returns (address);
-
-  /**
-   * @notice Returns the entire context
-   */
-  function context() external view returns (bytes32, uint256, address, uint256);
 }
