@@ -29,7 +29,9 @@ describe("Integration test", async function () {
   const salt = "0x" + "aabbccdd".repeat(8);
 
   let linkedId = Number(1).toString(16).padStart(64, "0");
-  let erc1167Header = "0x3d60ad80600a3d3981f3363d3d373d3d3d363d73";
+  let erc1167Constructor = "0x3d60ad80600a3d3981f3";
+  let erc1167Header = "0x363d3d373d3d3d363d73";
+  let erc1167ConstructorPlusHeader = erc1167Constructor + de0x(erc1167Header);
   let erc1167Footer = "0x5af43d82803e903d91602b57fd5bf3"
   let contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
   let implAddress = "0x0B306BF915C4d645ff596e518fAf3F9669b97016";
@@ -81,7 +83,7 @@ describe("Integration test", async function () {
 
   it("should get the expected creation code", async function () {
 
-    let bytecode = await factoryExt.getBytecode(
+    let bytecode = await factoryExt.getCreationBytecode(
         implAddress,
         salt,
         chainIdBytes32,
@@ -90,7 +92,7 @@ describe("Integration test", async function () {
         '0x00' // it is ignored
     );
     expect(bytecode).equal(
-        (erc1167Header +
+        (erc1167ConstructorPlusHeader +
         de0x(implAddress) +
         de0x(erc1167Footer) +
         de0x(salt) +
@@ -100,7 +102,7 @@ describe("Integration test", async function () {
         "00".repeat(32)
         ).toLowerCase());
 
-    bytecode = await factoryExt.getBytecode(
+    bytecode = await factoryExt.getCreationBytecode(
         implAddress,
         salt,
         chainIdBytes32,
@@ -109,7 +111,7 @@ describe("Integration test", async function () {
         '0x1234' // it is ignored
     );
     expect(bytecode).equal(
-        (erc1167Header +
+        (erc1167ConstructorPlusHeader +
             de0x(implAddress) +
             de0x(erc1167Footer) +
             de0x(salt) +
@@ -118,10 +120,6 @@ describe("Integration test", async function () {
             de0x(contractAddress) +
         "00".repeat(30) + "1234"
     ).toLowerCase());
-
-    let computedAddress = await factoryExt.getComputedAddress(salt, bytecode, await factoryExt.getAddress());
-    expect(computedAddress).equal(
-        "0x154F6d4cb2C49Ced657516b886931B957357Db05");
 
   });
 
@@ -156,14 +154,106 @@ describe("Integration test", async function () {
     }
 
     // Verify the address has code
-    let serviceAddress = expectedServiceAddress;
-    let code = await ethers.provider.getCode(serviceAddress);
+    let code = await ethers.provider.getCode(expectedServiceAddress);
     // console.log("Code at address:", code);
-    expect(code).equal("0x363d3d373d3d3d363d730b306bf915c4d645ff596e518faf3f9669b970165af43d82803e903d91602b57fd5bf3aabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccdd0000000000000000000000000000000000000000000000000000000000007a69000000000000000000000000e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000000000000000000000000000000000000000000001");
+    expect(code).equal(
+        (erc1167Header +
+            de0x(implAddress) +
+            de0x(erc1167Footer) +
+            de0x(salt) +
+            de0x(chainIdBytes32) +
+            de0x(mode0) +
+            de0x(contractAddress) +
+            de0x(linkedId)
+        ).toLowerCase()
+    );
+
+    let computedAddress = await factoryExt.getComputedAddress(salt, (erc1167ConstructorPlusHeader +
+        de0x(implAddress) +
+        de0x(erc1167Footer) +
+        de0x(salt) +
+        de0x(chainIdBytes32) +
+        de0x(mode0) +
+        de0x(contractAddress) +
+        de0x(linkedId)
+    ).toLowerCase(), await factory.getAddress());
+    expect(computedAddress).equal(expectedServiceAddress);
 
     // test the case the contract has been already deployed
 
     await factory.create(
+        implAddress,
+        salt,
+        chainIdBytes32,
+        mode0,
+        contractAddress,
+        linkedId,  // Use the same ID here
+        { gasLimit: 500000 }
+    );
+  });
+
+  it("should associate the service to the NFT and verify that the service has been deployed using the extended contract, to get a right coverage", async function () {
+
+    expect(await factoryExt.supportsInterface("0x9e23230a")).equal(true);
+    expect(await factoryExt.supportsInterface("0x01ffc9a7")).equal(true);
+
+    // Compute the address first
+    let expectedServiceAddress = await factoryExt.compute(
+        implAddress,
+        salt,
+        chainIdBytes32,
+        mode0,
+        contractAddress,
+        linkedId
+    );
+
+    try {
+      // Create the service using the same ID
+      const tx = await factoryExt.create(
+          implAddress,
+          salt,
+          chainIdBytes32,
+          mode0,
+          contractAddress,
+          linkedId,  // Use the same ID here
+          { gasLimit: 500000 }
+      );
+      const receipt = await tx.wait();
+      // console.log("Transaction receipt logs:", receipt.logs);
+    } catch (error) {
+      console.error("Error details:", error);
+      throw error;  // Re-throw to fail the test
+    }
+
+    // Verify the address has code
+    let code = await ethers.provider.getCode(expectedServiceAddress);
+    // console.log("Code at address:", code);
+    expect(code).equal(
+        (erc1167Header +
+            de0x(implAddress) +
+            de0x(erc1167Footer) +
+            de0x(salt) +
+            de0x(chainIdBytes32) +
+            de0x(mode0) +
+            de0x(contractAddress) +
+            de0x(linkedId)
+        ).toLowerCase()
+    );
+
+    let computedAddress = await factoryExt.getComputedAddress(salt, (erc1167ConstructorPlusHeader +
+        de0x(implAddress) +
+        de0x(erc1167Footer) +
+        de0x(salt) +
+        de0x(chainIdBytes32) +
+        de0x(mode0) +
+        de0x(contractAddress) +
+        de0x(linkedId)
+    ).toLowerCase(), await factoryExt.getAddress());
+    expect(computedAddress).equal(expectedServiceAddress);
+
+    // test the case the contract has been already deployed
+
+    await factoryExt.create(
         implAddress,
         salt,
         chainIdBytes32,
