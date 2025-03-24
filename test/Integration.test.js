@@ -20,7 +20,7 @@ const {
 
 describe("Integration test", async function () {
 
-  let registry;
+  let factory, factoryExt;
   let deployer, bob, alice, fred, mark;
   let chainId, chainIdBytes32;
   let badgeCollectorImpl, nft;
@@ -43,23 +43,23 @@ describe("Integration test", async function () {
     chainId = await getChainId();
     chainIdBytes32 = "0x" + chainId.toString(16).padStart(64, "0");
 
-    // registry = await deployUtils.deployBytecodeViaNickSFactory(
-    //     deployer,
-    //     "ERC7656Service.sol",
-    //     bytecodes.bytecode,
-    //     bytecodes.salt,
-    // );
-    // const registryAddress = await registry.getAddress();
-    // expect(registryAddress).equal(bytecodes.address);
+    factory = await deployUtils.deployBytecodeViaNickSFactory(
+        deployer,
+        "ERC7656Factory",
+        bytecodes.bytecode,
+        bytecodes.salt,
+    );
+    const registryAddress = await factory.getAddress();
+    expect(registryAddress).equal(bytecodes.address);
 
-    registry = await deployUtils.deploy("ERC7656FactoryExt");
+    factoryExt = await deployUtils.deploy("ERC7656FactoryExt");
 
     expect(await getInterfaceId("IERC7656Factory")).equal("9e23230a");
     expect(await getInterfaceId("IERC7656Service")).equal("7e110a1d");
     expect(await getInterfaceId("IERC165")).equal("01ffc9a7");
 
-    expect(await registry.supportsInterface("0x9e23230a")).equal(true);
-    expect(await registry.supportsInterface("0x01ffc9a7")).equal(true);
+    expect(await factory.supportsInterface("0x9e23230a")).equal(true);
+    expect(await factory.supportsInterface("0x01ffc9a7")).equal(true);
   });
 
   async function initAndDeploy() {
@@ -81,7 +81,7 @@ describe("Integration test", async function () {
 
   it("should get the expected creation code", async function () {
 
-    let bytecode = await registry.getBytecode(
+    let bytecode = await factoryExt.getBytecode(
         implAddress,
         salt,
         chainIdBytes32,
@@ -100,7 +100,7 @@ describe("Integration test", async function () {
         "00".repeat(32)
         ).toLowerCase());
 
-    bytecode = await registry.getBytecode(
+    bytecode = await factoryExt.getBytecode(
         implAddress,
         salt,
         chainIdBytes32,
@@ -119,12 +119,16 @@ describe("Integration test", async function () {
         "00".repeat(30) + "1234"
     ).toLowerCase());
 
+    let computedAddress = await factoryExt.getComputedAddress(salt, bytecode, await factoryExt.getAddress());
+    expect(computedAddress).equal(
+        "0x154F6d4cb2C49Ced657516b886931B957357Db05");
+
   });
 
   it("should associate the service to the NFT and verify that the service has been deployed", async function () {
 
     // Compute the address first
-    let expectedServiceAddress = await registry.compute(
+    let expectedServiceAddress = await factory.compute(
         implAddress,
         salt,
         chainIdBytes32,
@@ -135,7 +139,7 @@ describe("Integration test", async function () {
 
     try {
       // Create the service using the same ID
-      const tx = await registry.create(
+      const tx = await factory.create(
           implAddress,
           salt,
           chainIdBytes32,
@@ -159,7 +163,7 @@ describe("Integration test", async function () {
 
     // test the case the contract has been already deployed
 
-    await registry.create(
+    await factory.create(
         implAddress,
         salt,
         chainIdBytes32,
@@ -177,7 +181,7 @@ describe("Integration test", async function () {
   it("should associate the service to a smart account and verify that the service has been deployed", async function () {
 
     // Compute the address first
-    let expectedServiceAddress = await registry.compute(
+    let expectedServiceAddress = await factory.compute(
         implAddress,
         salt,
         chainIdBytes32,
@@ -188,7 +192,7 @@ describe("Integration test", async function () {
 
     try {
       // Create the service using the same ID
-      const tx = await registry.create(
+      const tx = await factory.create(
           implAddress,
           salt,
           chainIdBytes32,
@@ -218,7 +222,7 @@ describe("Integration test", async function () {
     // mint an nft
     await nft.safeMint(bob.address, linkedId);
 
-      let expectedServiceAddress = await registry.compute(
+      let expectedServiceAddress = await factory.compute(
           await badgeCollectorImpl.getAddress(),
           salt,
           chainIdBytes32,
@@ -227,7 +231,7 @@ describe("Integration test", async function () {
           linkedId
       );
 
-      await expect(registry.create(
+      await expect(factory.create(
             await badgeCollectorImpl.getAddress(),
             salt,
             chainIdBytes32,
@@ -235,7 +239,7 @@ describe("Integration test", async function () {
             await nft.getAddress(),
             linkedId,  // Use the same ID here
             { gasLimit: 500000 }
-        )).emit(registry, "Created")
+        )).emit(factory, "Created")
           .withArgs(
               expectedServiceAddress,
               await badgeCollectorImpl.getAddress(),
@@ -272,7 +276,7 @@ describe("Integration test", async function () {
     // mint an nft
     await nft.safeMint(bob.address, linkedId);
 
-    let expectedServiceAddress = await registry.compute(
+    let expectedServiceAddress = await factory.compute(
         await badgeCollectorImpl.getAddress(),
         salt,
         chainIdBytes32,
@@ -281,7 +285,7 @@ describe("Integration test", async function () {
         linkedId
     );
 
-    await registry.create(
+    await factory.create(
         await badgeCollectorImpl.getAddress(),
         salt,
         chainIdBytes32,

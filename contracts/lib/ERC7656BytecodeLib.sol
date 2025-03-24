@@ -25,8 +25,7 @@ library ERC7656BytecodeLib {
       // 0x37: erc1167 footer  (15 bytes)
       // 0x77: salt            (32 bytes)
       // 0x57: chainId         (32 bytes)
-      // 0x97  mode            (1 byte)
-      // 0x98  empty space     (11 bytes)
+      // 0x97  mode            (12 bytes)
       // 0xa9: linkedContract  (20 bytes)
       // 0xb7: linkedId        (32 bytes, optional)
 
@@ -44,10 +43,6 @@ library ERC7656BytecodeLib {
   }
 
   function computeAddress(bytes32 salt, bytes32 bytecodeHash, address deployer) internal pure returns (address result) {
-    // In YUL, a bytes32 salt is passed as a right-padded bytes32. For example, if we
-    // have salt = 0x1234567890123456789012, it is passed in YUL as
-    // 0x1234567890123456789012000000000000000000000000000000000000000000
-    // and this way it is used in the create2 opcode.
     // solhint-disable-next-line no-inline-assembly
     assembly {
       result := mload(0x40) // Grab the free memory pointer
