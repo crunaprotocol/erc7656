@@ -20,15 +20,14 @@ library ERC7656BytecodeLib {
     // solhint-disable-next-line no-inline-assembly
     assembly {
       // data structure
-      // 0x14: erc1167 header  (10 bytes)
-      // 0x28: implementation  (20 bytes)
-      // 0x37: erc1167 footer  (15 bytes)
-      // 0x77: salt            (32 bytes)
-      // 0x57: chainId         (32 bytes)
-      // 0x97  mode            (12 bytes)
-      // 0xa9: linkedContract  (20 bytes)
-      // 0xb7: linkedId        (32 bytes, optional)
-
+      // 0x14: ERC-1167 Constructor + Header  (20 bytes)
+      // 0x28: implementation                 (20 bytes)
+      // 0x37: erc1167 footer                 (15 bytes)
+      // 0x77: salt                           (32 bytes)
+      // 0x57: chainId                        (32 bytes)
+      // 0x97  mode                           (12 bytes)
+      // 0xa9: linkedContract                 (20 bytes)
+      // 0xb7: linkedId                       (32 bytes)
       result := mload(0x40) // Grab the free memory pointer
       mstore(add(result, 0x37), 0x5af43d82803e903d91602b57fd5bf3) // erc1167 footer
       mstore(add(result, 0x28), implementation)

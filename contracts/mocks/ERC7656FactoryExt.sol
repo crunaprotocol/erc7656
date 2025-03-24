@@ -5,7 +5,7 @@ import {ERC7656Factory} from "../ERC7656Factory.sol";
 import {ERC7656BytecodeLib} from "../lib/ERC7656BytecodeLib.sol";
 
 contract ERC7656FactoryExt is ERC7656Factory {
-  function getBytecode(
+  function getCreationBytecode(
     address implementation,
     bytes32 salt,
     uint256 chainId,
