@@ -13,7 +13,7 @@ contract ERC7656Factory is IERC165, IERC7656Factory {
     address linkedContract,
     uint256 linkedId
   ) external override returns (address) {
-    if (mode == bytes12(uint96(1))) {
+    if (mode == 0x000000000000000000000001) {
       linkedId = 0;
     }
     // solhint-disable-next-line no-inline-assembly
