@@ -277,7 +277,7 @@ describe("Integration test", async function () {
         chainIdBytes32,
         mode1,
         contractAddress,
-        0
+        1234
     );
 
     try {
@@ -302,7 +302,7 @@ describe("Integration test", async function () {
     let serviceAddress = expectedServiceAddress;
     let code = await ethers.provider.getCode(serviceAddress);
     // console.log("Code at address:", code);
-    expect(code).equal("0x363d3d373d3d3d363d730b306bf915c4d645ff596e518faf3f9669b970165af43d82803e903d91602b57fd5bf3aabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccdd0000000000000000000000000000000000000000000000000000000000007a69000000000000000000000001e7f1725e7734ce288f8367e1bb143e90bb3f05120000000000000000000000000000000000000000000000000000000000000000");
+    expect(code).equal("0x363d3d373d3d3d363d730b306bf915c4d645ff596e518faf3f9669b970165af43d82803e903d91602b57fd5bf3aabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccdd0000000000000000000000000000000000000000000000000000000000007a69000000000000000000000001e7f1725e7734ce288f8367e1bb143e90bb3f051200000000000000000000000000000000000000000000000000000000000004d2");
   });
 
 
