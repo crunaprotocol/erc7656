@@ -9,5 +9,5 @@
     ],
     "testnets": []
   },
-  "README": "If you deploy it to other network, please raise a PR to update the `deployedTo` field."
+  "README": "If you deploy it to other networks, please raise a PR to update the `deployedTo` field."
 }
