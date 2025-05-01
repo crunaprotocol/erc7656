@@ -8,18 +8,9 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 //import "hardhat/console.sol";
 
 contract SomeNiceNFT is ERC721, Ownable {
-  error NotTransferable();
-
   constructor(address initialOwner) ERC721("SomeNiceNFT", "SNNFT") Ownable(initialOwner) {}
 
   function safeMint(address to, uint256 tokenId) public onlyOwner {
     _safeMint(to, tokenId);
-  }
-
-  function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721) returns (address) {
-    if (_ownerOf(tokenId) != address(0)) {
-      revert NotTransferable();
-    }
-    return super._update(to, tokenId, auth);
   }
 }

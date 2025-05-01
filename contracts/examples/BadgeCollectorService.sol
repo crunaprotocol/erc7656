@@ -43,4 +43,4 @@ contract BadgeCollectorService is ERC7656ServiceExt, IERC721Receiver, Context {
     (, , address nft, uint256 id) = _linkedData();
     return IERC721(nft).ownerOf(id);
   }
-}
+} 

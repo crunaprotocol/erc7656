@@ -20,7 +20,7 @@ contract ERC7656FactoryExt is ERC7656Factory {
     bytes32 salt,
     bytes memory bytecode,
     address deployer
-  ) external view returns (address) {
+  ) external pure returns (address) {
     return ERC7656BytecodeLib.computeAddress(salt, keccak256(bytecode), deployer);
   }
 }

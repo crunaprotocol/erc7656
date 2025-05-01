@@ -21,6 +21,9 @@ importers:
       '@nomicfoundation/hardhat-ethers':
         specifier: ^3.0.8
         version: 3.0.8(ethers@6.13.5(bufferutil@4.0.9)(utf-8-validate@5.0.10))(hardhat@2.22.18(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10))
+      '@nomicfoundation/hardhat-network-helpers':
+        specifier: ^1.0.12
+        version: 1.0.12(hardhat@2.22.18(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10))
       '@nomicfoundation/hardhat-verify':
         specifier: ^2.0.12
         version: 2.0.12(hardhat@2.22.18(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10))
@@ -464,6 +467,11 @@ packages:
     peerDependencies:
       ethers: ^6.1.0
       hardhat: ^2.0.0
+
+  '@nomicfoundation/hardhat-network-helpers@1.0.12':
+    resolution: {integrity: sha512-xTNQNI/9xkHvjmCJnJOTyqDSl8uq1rKb2WOVmixQxFtRd7Oa3ecO8zM0cyC2YmOK+jHB9WPZ+F/ijkHg1CoORA==}
+    peerDependencies:
+      hardhat: ^2.9.5
 
   '@nomicfoundation/hardhat-verify@2.0.12':
     resolution: {integrity: sha512-Lg3Nu7DCXASQRVI/YysjuAX2z8jwOCbS0w5tz2HalWGSTZThqA0v9N0v0psHbKNqzPJa8bNOeapIVSziyJTnAg==}
@@ -4881,6 +4889,11 @@ snapshots:
       lodash.isequal: 4.5.0
     transitivePeerDependencies:
       - supports-color
+
+  '@nomicfoundation/hardhat-network-helpers@1.0.12(hardhat@2.22.18(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10))':
+    dependencies:
+      ethereumjs-util: 7.1.5
+      hardhat: 2.22.18(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)
 
   '@nomicfoundation/hardhat-verify@2.0.12(hardhat@2.22.18(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10))':
     dependencies:
