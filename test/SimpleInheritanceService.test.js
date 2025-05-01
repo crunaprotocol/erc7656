@@ -74,6 +74,9 @@ describe("SimpleInheritanceService", function () {
     );
 
     inheritanceService = await ethers.getContractAt("SimpleInheritanceService", serviceAddress);
+    
+    // Initialize the service
+    await inheritanceService.initialize();
   });
 
   describe("Initialization", function () {
@@ -83,6 +86,42 @@ describe("SimpleInheritanceService", function () {
 
     it("should implement IERC7656Service", async function () {
       expect(await inheritanceService.supportsInterface("0x7e110a1d")).to.be.true;
+    });
+
+    it("should not allow double initialization", async function () {
+      await expect(inheritanceService.initialize())
+        .to.be.revertedWithCustomError(inheritanceService, "AlreadyInitialized");
+    });
+
+    it("should not allow using functions before initialization", async function () {
+      // Deploy a new uninitialized instance
+      const mode = "0x000000000000000000000000"; // LINKED_ID mode
+      const newTokenId = 2;
+      const linkedId = "0x" + newTokenId.toString(16).padStart(64, "0");
+      const newSalt = ethers.randomBytes(32);
+
+      const serviceAddress = await factory.compute(
+        await inheritanceServiceImpl.getAddress(),
+        newSalt,
+        chainIdBytes32,
+        mode,
+        await nft.getAddress(),
+        linkedId
+      );
+
+      await factory.create(
+        await inheritanceServiceImpl.getAddress(),
+        newSalt,
+        chainIdBytes32,
+        mode,
+        await nft.getAddress(),
+        linkedId
+      );
+
+      const uninitializedService = await ethers.getContractAt("SimpleInheritanceService", serviceAddress);
+
+      await expect(uninitializedService.setBeneficiary(beneficiary.address, gracePeriod))
+        .to.be.revertedWithCustomError(uninitializedService, "NotInitialized");
     });
   });
 
@@ -151,8 +190,8 @@ describe("SimpleInheritanceService", function () {
       await ethers.provider.send("evm_increaseTime", [gracePeriod + 1]);
       await ethers.provider.send("evm_mine");
 
-      // Approve the inheritance service to transfer the NFT
-      await nft.connect(owner).approve(inheritanceService.getAddress(), tokenId);
+      // Transfer the NFT to the inheritance service first
+      await nft.connect(owner).transferFrom(owner.address, inheritanceService.getAddress(), tokenId);
 
       await expect(inheritanceService.connect(beneficiary).claimNFT())
         .to.emit(inheritanceService, "NFTClaimed")

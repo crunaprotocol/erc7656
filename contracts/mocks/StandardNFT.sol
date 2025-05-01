@@ -5,9 +5,9 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract StandardNFT is ERC721, Ownable {
-    constructor(address initialOwner) ERC721("StandardNFT", "SNFT") Ownable(initialOwner) {}
+  constructor(address initialOwner) ERC721("StandardNFT", "SNFT") Ownable(initialOwner) {}
 
-    function safeMint(address to, uint256 tokenId) public onlyOwner {
-        _safeMint(to, tokenId);
-    }
-} 
+  function safeMint(address to, uint256 tokenId) public onlyOwner {
+    _safeMint(to, tokenId);
+  }
+}

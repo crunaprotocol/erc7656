@@ -16,7 +16,7 @@ require("@nomicfoundation/hardhat-chai-matchers");
  */
 module.exports = Object.assign({
       solidity: {
-        version: "0.8.22",
+        version: "0.8.28",
         settings: {
           optimizer: {
             enabled: true,

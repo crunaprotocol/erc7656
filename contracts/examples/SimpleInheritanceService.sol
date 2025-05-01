@@ -11,98 +11,114 @@ import {ERC7656Service} from "../ERC7656Service.sol";
  * if the owner doesn't provide a proof of life within a specified timeframe
  */
 contract SimpleInheritanceService is ERC7656Service, Ownable {
-    bytes12 constant LINKED_ID = 0x000000000000000000000000;
+  bytes12 private constant _LINKED_ID = 0x000000000000000000000000;
+  bool private _initialized;
 
-    struct Inheritance {
-        address beneficiary;
-        uint256 lastProofOfLife;
-        uint256 gracePeriod;
+  struct Inheritance {
+    address beneficiary;
+    uint256 lastProofOfLife;
+    uint256 gracePeriod;
+  }
+
+  // Mapping from NFT contract => token ID => inheritance data
+  mapping(address => mapping(uint256 => Inheritance)) public inheritances;
+
+  event BeneficiarySet(address indexed nftContract, uint256 indexed tokenId, address beneficiary);
+  event ProofOfLifeProvided(address indexed nftContract, uint256 indexed tokenId);
+  event NFTClaimed(address indexed nftContract, uint256 indexed tokenId, address beneficiary);
+
+  error NotOwner();
+  error NoBeneficiarySet();
+  error GracePeriodNotExpired();
+  error TransferFailed();
+  error WrongChain();
+  error WrongMode();
+  error AlreadyInitialized();
+  error NotInitialized();
+
+  modifier whenInitialized() {
+    if (!_initialized) revert NotInitialized();
+    _;
+  }
+
+  constructor() Ownable(msg.sender) {}
+
+  /**
+   * @notice Initialize the service by validating the mode
+   */
+  function initialize() external {
+    if (_initialized) revert AlreadyInitialized();
+    (uint256 chainId, bytes12 mode, , ) = linkedData();
+    if (chainId != block.chainid) revert WrongChain();
+    if (mode != _LINKED_ID) revert WrongMode();
+    _initialized = true;
+  }
+
+  /**
+   * @notice Sets a beneficiary for the NFT
+   * @param beneficiary The address that will receive the NFT if the owner doesn't provide proof of life
+   * @param gracePeriod The time period (in seconds) after which the beneficiary can claim if no proof of life is provided
+   */
+  function setBeneficiary(address beneficiary, uint256 gracePeriod) external whenInitialized {
+    (uint256 chainId, , address linkedContract, uint256 linkedId) = linkedData();
+    if (chainId != block.chainid) revert WrongChain();
+
+    address owner = IERC721(linkedContract).ownerOf(linkedId);
+    if (msg.sender != owner) revert NotOwner();
+
+    inheritances[linkedContract][linkedId] = Inheritance({
+      beneficiary: beneficiary,
+      lastProofOfLife: block.timestamp,
+      gracePeriod: gracePeriod
+    });
+
+    emit BeneficiarySet(linkedContract, linkedId, beneficiary);
+  }
+
+  /**
+   * @notice Provides proof of life for the NFT
+   */
+  function provideProofOfLife() external whenInitialized {
+    (uint256 chainId, , address linkedContract, uint256 linkedId) = linkedData();
+    if (chainId != block.chainid) revert WrongChain();
+
+    address owner = IERC721(linkedContract).ownerOf(linkedId);
+    if (msg.sender != owner) revert NotOwner();
+
+    Inheritance storage inheritance = inheritances[linkedContract][linkedId];
+    inheritance.lastProofOfLife = block.timestamp;
+
+    emit ProofOfLifeProvided(linkedContract, linkedId);
+  }
+
+  /**
+   * @notice Claims the NFT if the grace period has expired
+   */
+  function claimNFT() external whenInitialized {
+    (uint256 chainId, , address linkedContract, uint256 linkedId) = linkedData();
+    if (chainId != block.chainid) revert WrongChain();
+
+    Inheritance storage inheritance = inheritances[linkedContract][linkedId];
+    if (inheritance.beneficiary == address(0)) revert NoBeneficiarySet();
+    if (inheritance.beneficiary != msg.sender) revert NotOwner();
+
+    if (block.timestamp <= inheritance.lastProofOfLife + inheritance.gracePeriod) {
+      revert GracePeriodNotExpired();
     }
 
-    // Mapping from NFT contract address => tokenId => inheritance data
-    mapping(address => mapping(uint256 => Inheritance)) public inheritances;
+    // Transfer the NFT to the beneficiary
+    IERC721(linkedContract).transferFrom(address(this), msg.sender, linkedId);
 
-    event BeneficiarySet(address indexed nftContract, uint256 indexed tokenId, address beneficiary);
-    event ProofOfLifeProvided(address indexed nftContract, uint256 indexed tokenId);
-    event NFTClaimed(address indexed nftContract, uint256 indexed tokenId, address beneficiary);
+    emit NFTClaimed(linkedContract, linkedId, msg.sender);
+  }
 
-    error NotOwner();
-    error NoBeneficiarySet();
-    error GracePeriodNotExpired();
-    error TransferFailed();
-    error WrongMode();
+  /**
+   * @notice Returns the inheritance data for the NFT
+   */
+  function getInheritanceData() external view whenInitialized returns (Inheritance memory) {
+    (uint256 chainId, , address linkedContract, uint256 linkedId) = linkedData();
+    if (chainId != block.chainid) revert WrongChain();
 
-    constructor() Ownable(msg.sender) {}
-
-    /**
-     * @notice Sets a beneficiary for the NFT
-     * @param beneficiary The address that will receive the NFT if the owner doesn't provide proof of life
-     * @param gracePeriod The time period (in seconds) after which the beneficiary can claim if no proof of life is provided
-     */
-    function setBeneficiary(address beneficiary, uint256 gracePeriod) external {
-        (uint256 chainId, bytes12 mode, address linkedContract, uint256 linkedId) = linkedData();
-        if (chainId != block.chainid) revert("Wrong chain");
-        if (mode != LINKED_ID) revert WrongMode();
-        
-        address owner = IERC721(linkedContract).ownerOf(linkedId);
-        if (owner != msg.sender) revert NotOwner();
-
-        inheritances[linkedContract][linkedId] = Inheritance({
-            beneficiary: beneficiary,
-            lastProofOfLife: block.timestamp,
-            gracePeriod: gracePeriod
-        });
-
-        emit BeneficiarySet(linkedContract, linkedId, beneficiary);
-    }
-
-    /**
-     * @notice Provides proof of life for the NFT
-     */
-    function provideProofOfLife() external {
-        (uint256 chainId, bytes12 mode, address linkedContract, uint256 linkedId) = linkedData();
-        if (chainId != block.chainid) revert("Wrong chain");
-        if (mode != LINKED_ID) revert WrongMode();
-        
-        address owner = IERC721(linkedContract).ownerOf(linkedId);
-        if (owner != msg.sender) revert NotOwner();
-
-        Inheritance storage inheritance = inheritances[linkedContract][linkedId];
-        inheritance.lastProofOfLife = block.timestamp;
-
-        emit ProofOfLifeProvided(linkedContract, linkedId);
-    }
-
-    /**
-     * @notice Claims the NFT if the grace period has expired
-     */
-    function claimNFT() external {
-        (uint256 chainId, bytes12 mode, address linkedContract, uint256 linkedId) = linkedData();
-        if (chainId != block.chainid) revert("Wrong chain");
-        if (mode != LINKED_ID) revert WrongMode();
-
-        Inheritance storage inheritance = inheritances[linkedContract][linkedId];
-        if (inheritance.beneficiary == address(0)) revert NoBeneficiarySet();
-        if (inheritance.beneficiary != msg.sender) revert NotOwner();
-
-        if (block.timestamp <= inheritance.lastProofOfLife + inheritance.gracePeriod) {
-            revert GracePeriodNotExpired();
-        }
-
-        address owner = IERC721(linkedContract).ownerOf(linkedId);
-        IERC721(linkedContract).transferFrom(owner, msg.sender, linkedId);
-
-        emit NFTClaimed(linkedContract, linkedId, msg.sender);
-    }
-
-    /**
-     * @notice Returns the inheritance data for the NFT
-     */
-    function getInheritanceData() external view returns (Inheritance memory) {
-        (uint256 chainId, bytes12 mode, address linkedContract, uint256 linkedId) = linkedData();
-        if (chainId != block.chainid) revert("Wrong chain");
-        if (mode != LINKED_ID) revert WrongMode();
-        
-        return inheritances[linkedContract][linkedId];
-    }
-} 
+    return inheritances[linkedContract][linkedId];
+  }
+}
