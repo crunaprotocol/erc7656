@@ -1,12 +1,17 @@
 {
   "name": "erc7656",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "ERC7656 Reference Implementation",
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "/contracts/**/*.sol"
+    "/contracts/ERC7656Factory.sol",
+    "/contracts/ERC7656Service.sol",
+    "/contracts/extensions/**/*.sol",
+    "/contracts/interfaces/**/*.sol",
+    "/contracts/lib/**/*.sol",
+    "/contracts/bytecode.json"
   ],
   "scripts": {
     "clean": "rimraf artifacts cache",

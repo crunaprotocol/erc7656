@@ -16,11 +16,7 @@ contract ERC7656FactoryExt is ERC7656Factory {
     return ERC7656BytecodeLib.getCreationCode(implementation, salt, chainId, mode, linkedContract, linkedId);
   }
 
-  function getComputedAddress(
-    bytes32 salt,
-    bytes memory bytecode,
-    address deployer
-  ) external view returns (address) {
+  function getComputedAddress(bytes32 salt, bytes memory bytecode, address deployer) external pure returns (address) {
     return ERC7656BytecodeLib.computeAddress(salt, keccak256(bytecode), deployer);
   }
 }
