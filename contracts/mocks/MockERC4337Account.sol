@@ -1,24 +1,45 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.28;
 
-import {SimpleAccount} from "@account-abstraction/contracts/accounts/SimpleAccount.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@account-abstraction/contracts/accounts/SimpleAccount.sol";
+import "@account-abstraction/contracts/core/BaseAccount.sol";
 import {IEntryPoint} from "@account-abstraction/contracts/interfaces/IEntryPoint.sol";
+import {PackedUserOperation} from "@account-abstraction/contracts/interfaces/PackedUserOperation.sol";
 
 /**
  * @title MockERC4337Account
- * @notice A mock ERC4337 account that extends the official SimpleAccount implementation
+ * @notice A mock ERC-4337 account for testing purposes that extends the standard SimpleAccount
  */
 contract MockERC4337Account is SimpleAccount {
-  error NotOwner();
-
-  constructor(IEntryPoint _entryPoint) SimpleAccount(_entryPoint) {}
+  constructor(IEntryPoint anEntryPoint) SimpleAccount(anEntryPoint) {}
 
   /**
-   * @notice Transfer account ownership (only callable by the account itself or through the entry point)
-   * @param newOwner The new owner address
+   * @notice Initialize the account with an owner
+   * @param anOwner The owner of the account
    */
-  function transferOwnership(address newOwner) external {
-    if (msg.sender != address(this) && msg.sender != address(entryPoint())) revert NotOwner();
-    owner = newOwner;
+  function initialize(address anOwner) public override initializer {
+    super.initialize(anOwner);
+  }
+
+  /**
+   * @notice Get the entry point contract
+   * @return The entry point contract
+   */
+  function entryPoint() public view override returns (IEntryPoint) {
+    return super.entryPoint();
+  }
+
+  /**
+   * @notice Validate a user operation signature
+   * @param userOp The user operation to validate
+   * @param userOpHash The hash of the user operation
+   * @return validationData The validation data
+   */
+  function _validateSignature(
+    PackedUserOperation calldata userOp,
+    bytes32 userOpHash
+  ) internal override returns (uint256 validationData) {
+    return super._validateSignature(userOp, userOpHash);
   }
 }

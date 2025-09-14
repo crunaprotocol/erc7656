@@ -21,7 +21,8 @@ module.exports = Object.assign({
           optimizer: {
             enabled: true,
             runs: 200,
-          }
+          },
+          evmVersion: "cancun"
         },
       },
     },

@@ -3,16 +3,9 @@ pragma solidity ^0.8.20;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ERC7656Service} from "../ERC7656Service.sol";
-
-interface IEntryPoint {
-  struct UserOperation {
-    address sender;
-    uint256 value;
-    bytes callData;
-  }
-
-  function handleOps(UserOperation[] calldata ops, address payable beneficiary) external;
-}
+import {IEntryPoint} from "@account-abstraction/contracts/interfaces/IEntryPoint.sol";
+import {PackedUserOperation} from "@account-abstraction/contracts/interfaces/PackedUserOperation.sol";
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /**
  * @title AccountInheritanceService
@@ -49,6 +42,13 @@ contract AccountInheritanceService is ERC7656Service, Ownable {
   // The entry point contract address
   address public entryPoint;
 
+  // Gas limit configurations
+  uint128 public constant VERIFICATION_GAS_LIMIT_CLAIM = 300000;
+  uint128 public constant CALL_GAS_LIMIT_CLAIM = 400000;
+  uint128 public constant PRE_VERIFICATION_GAS = 50000;
+  uint128 public constant MAX_PRIORITY_FEE = 5 gwei;
+  uint128 public constant MAX_FEE = 10 gwei;
+
   modifier whenInitialized() {
     if (!_initialized) revert NotInitialized();
     _;
@@ -78,7 +78,8 @@ contract AccountInheritanceService is ERC7656Service, Ownable {
     (uint256 chainId, , address linkedContract, uint256 linkedId) = linkedData();
     if (chainId != block.chainid) revert WrongChain();
 
-    if (msg.sender != linkedContract) revert NotOwner();
+    // Allow both direct calls from the account and calls through the entry point
+    if (msg.sender != linkedContract && msg.sender != entryPoint) revert NotOwner();
 
     inheritances[linkedContract][linkedId] = Inheritance({
       beneficiary: beneficiary,
@@ -106,8 +107,9 @@ contract AccountInheritanceService is ERC7656Service, Ownable {
 
   /**
    * @notice Claims the account if the grace period has expired
+   * @param signature The signature from the account owner authorizing the claim
    */
-  function claimAccount() external whenInitialized {
+  function claimAccount(bytes memory signature) external whenInitialized {
     if (entryPoint == address(0)) revert EntryPointNotSet();
     (uint256 chainId, , address linkedContract, uint256 linkedId) = linkedData();
     if (chainId != block.chainid) revert WrongChain();
@@ -120,20 +122,38 @@ contract AccountInheritanceService is ERC7656Service, Ownable {
       revert GracePeriodNotExpired();
     }
 
-    // Create the transferOwnership call data
-    bytes memory transferData = abi.encodeWithSignature("transferOwnership(address)", msg.sender);
+    // Create the execute call data to set owner
+    bytes memory executeData = abi.encodeWithSignature("execute(address,uint256,bytes)", 
+      linkedContract, 
+      0, 
+      abi.encodeWithSignature("setOwner(address)", msg.sender)
+    );
 
-    // Create the execute call data
-    bytes memory executeData = abi.encodeWithSignature("execute(address,uint256,bytes)", linkedContract, 0, transferData);
+    // Create the user operation with optimized gas limits
+    PackedUserOperation memory userOp = PackedUserOperation({
+      sender: linkedContract,
+      nonce: IEntryPoint(entryPoint).getNonce(linkedContract, 0),
+      initCode: "",
+      callData: executeData,
+      accountGasLimits: bytes32(abi.encodePacked(VERIFICATION_GAS_LIMIT_CLAIM, CALL_GAS_LIMIT_CLAIM)),
+      preVerificationGas: PRE_VERIFICATION_GAS,
+      gasFees: bytes32(abi.encodePacked(MAX_PRIORITY_FEE, MAX_FEE)),
+      paymasterAndData: "",
+      signature: signature
+    });
 
-    // Create the user operation
-    IEntryPoint.UserOperation[] memory ops = new IEntryPoint.UserOperation[](1);
-    ops[0] = IEntryPoint.UserOperation({sender: linkedContract, value: 0, callData: executeData});
+    // Create the array of operations
+    PackedUserOperation[] memory ops = new PackedUserOperation[](1);
+    ops[0] = userOp;
 
     // Execute the operation through the entry point
-    IEntryPoint(entryPoint).handleOps(ops, payable(address(0)));
-
-    emit AccountClaimed(linkedContract, linkedId, msg.sender);
+    try IEntryPoint(entryPoint).handleOps(ops, payable(address(0))) {
+      emit AccountClaimed(linkedContract, linkedId, msg.sender);
+    } catch Error(string memory reason) {
+      revert(reason);
+    } catch (bytes memory) {
+      revert("AA24 signature error");
+    }
   }
 
   /**
