@@ -6,8 +6,11 @@
     "access": "public"
   },
   "files": [
-    "**/*.sol",
-    "README.md",
+    "ERC7656Factory.sol",
+    "ERC7656Service.sol",
+    "extensions/**/*.sol",
+    "interfaces/**/*.sol",
+    "lib/**/*.sol",
     "bytecode.json"
   ],
   "scripts": {
