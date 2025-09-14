@@ -37,11 +37,10 @@ Look at the examples in the `/examples` directory for implementation references.
 
 ## Examples
 
-The repository includes several example implementations that demonstrate different use cases of ERC-7656:
+The repository includes example implementations that demonstrate different use cases of ERC-7656:
 
 - `BadgeCollectorService.sol` (currently in `/mocks`): A simple example showing how to create a service that collects badges for an NFT. This should be moved to `/examples` as it's a proper example rather than a mock.
 - `SimpleInheritanceService.sol`: A basic inheritance service that allows NFT owners to designate beneficiaries who can claim the NFT if the owner doesn't provide a proof of life within a specified timeframe.
-- `AccountInheritanceService.sol`: A more complex example that implements an inheritance mechanism for ERC-4337 accounts. It extends the simple inheritance concept to work with ERC-4337 accounts, allowing account owners to designate beneficiaries who can claim the account if the owner doesn't provide a proof of life within a specified timeframe.
 
 Each example includes comprehensive tests in the `test` directory that demonstrate how to interact with the services and verify their functionality.
 
